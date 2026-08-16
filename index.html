@@ -1,2113 +1,531 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#f5f5f7">
-<title>情侣飞行棋 V2.0</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",
-  "Helvetica Neue",Arial,sans-serif;
-  background:#f5f5f7;
-  color:#1c1c1e;
-  min-height:100vh;
-}
-
-button{
-  border:0;
-  font:inherit;
-  cursor:pointer;
-}
-
-.app{
-  width:min(720px,100%);
-  margin:auto;
-  padding:18px 14px 40px;
-}
-
-.header{
-  text-align:center;
-  padding:10px 0 16px;
-}
-
-.header h1{
-  margin:0;
-  font-size:28px;
-  letter-spacing:-1px;
-}
-
-.header p{
-  margin:6px 0 0;
-  color:#8e8e93;
-  font-size:13px;
-}
-
-.card{
-  background:rgba(255,255,255,.88);
-  border:1px solid rgba(0,0,0,.06);
-  border-radius:24px;
-  box-shadow:0 8px 30px rgba(0,0,0,.08);
-  padding:16px;
-  margin-bottom:14px;
-  backdrop-filter:blur(20px);
-}
-
-.players{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.player{
-  border-radius:18px;
-  padding:12px;
-  background:#f2f2f7;
-  text-align:center;
-  transition:.25s;
-}
-
-.player.active{
-  background:#e8f1ff;
-  box-shadow:0 0 0 2px #007aff inset;
-}
-
-.player-dot{
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  display:inline-block;
-  vertical-align:middle;
-  margin-right:6px;
-}
-
-.board-wrap{
-  position:relative;
-  width:100%;
-  aspect-ratio:1/1;
-  margin:auto;
-  background:
-    linear-gradient(135deg,#eef7ff,#fff1f7);
-  border-radius:28px;
-  padding:10px;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.9),
-    0 15px 35px rgba(0,0,0,.1);
-}
-
-.board{
-  width:100%;
-  height:100%;
-  position:relative;
-  border-radius:22px;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 50% 50%,#fff 0%,#f7f7fa 55%,#ededf2 100%);
-}
-
-.board::before{
-  content:"💕";
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  font-size:45px;
-  opacity:.22;
-}
-
-.cell{
-  position:absolute;
-  width:8%;
-  aspect-ratio:1;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  background:#fff;
-  border:2px solid #d1d1d6;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:10px;
-  font-weight:700;
-  box-shadow:0 3px 8px rgba(0,0,0,.1);
-}
-
-.cell.task{
-  background:#fff2c7;
-  border-color:#ffcc00;
-}
-
-.cell.lucky{
-  background:#e8f8ec;
-  border-color:#34c759;
-}
-
-.cell.start{
-  background:#e5f0ff;
-  border-color:#007aff;
-}
-
-.cell.end{
-  background:#ffe5ed;
-  border-color:#ff375f;
-}
-
-.token{
-  position:absolute;
-  width:31px;
-  height:31px;
-  border-radius:50%;
-  transform:translate(-50%,-50%);
-  z-index:20;
-  border:3px solid white;
-  box-shadow:
-    0 4px 10px rgba(0,0,0,.25),
-    0 0 0 1px rgba(0,0,0,.1);
-  transition:
-    left .3s ease,
-    top .3s ease;
-}
-
-.token.boy{
-  background:#007aff;
-}
-
-.token.girl{
-  background:#ff375f;
-}
-
-.dice-area{
-  text-align:center;
-}
-
-.dice{
-  width:100px;
-  height:100px;
-  margin:4px auto 12px;
-  border-radius:24px;
-  background:linear-gradient(145deg,#fff,#e5e5ea);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:62px;
-  box-shadow:
-    0 10px 25px rgba(0,0,0,.15),
-    inset 0 1px 1px white;
-}
-
-.dice.rolling{
-  animation:dice .65s ease;
-}
-
-@keyframes dice{
-  0%{transform:rotate(0) scale(1)}
-  25%{transform:rotate(15deg) scale(1.08)}
-  50%{transform:rotate(-18deg) scale(1.08)}
-  75%{transform:rotate(10deg) scale(1.04)}
-  100%{transform:rotate(0) scale(1)}
-}
-
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-}
-
-.primary{
-  background:#007aff;
-  color:#fff;
-}
-
-.secondary{
-  background:#e5e5ea;
-  color:#1c1c1e;
-}
-
-.danger{
-  background:#ff3b30;
-  color:#fff;
-}
-
-.success{
-  background:#34c759;
-  color:#fff;
-}
-
-button{
-  min-height:46px;
-  border-radius:14px;
-  padding:0 14px;
-  font-weight:700;
-}
-
-button:active{
-  transform:scale(.97);
-}
-
-.status{
-  text-align:center;
-  padding:12px;
-  background:#f2f2f7;
-  border-radius:14px;
-  margin-top:10px;
-  font-size:14px;
-}
-
-.task-box{
-  min-height:70px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:15px;
-  background:#fff8e1;
-  border-radius:17px;
-  font-size:16px;
-  font-weight:650;
-}
-
-.log{
-  max-height:180px;
-  overflow:auto;
-  font-size:13px;
-}
-
-.log div{
-  padding:9px 0;
-  border-bottom:1px solid #eee;
-}
-
-.settings{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.input{
-  width:100%;
-  padding:12px;
-  border-radius:13px;
-  border:1px solid #d1d1d6;
-  font-size:16px;
-  outline:none;
-  background:#fff;
-}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.38);
-  backdrop-filter:blur(12px);
-  z-index:100;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.overlay.show{
-  display:flex;
-}
-
-.modal{
-  width:min(430px,100%);
-  background:rgba(255,255,255,.97);
-  border-radius:28px;
-  padding:24px;
-  box-shadow:0 25px 70px rgba(0,0,0,.25);
-  animation:pop .22s ease;
-}
-
-@keyframes pop{
-  from{
-    opacity:0;
-    transform:scale(.9);
-  }
-  to{
-    opacity:1;
-    transform:scale(1);
-  }
-}
-
-.modal h2{
-  margin:0 0 10px;
-  font-size:24px;
-}
-
-.modal p{
-  line-height:1.6;
-  color:#3a3a3c;
-}
-
-.modal-buttons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-}
-
-.modal-buttons.one{
-  grid-template-columns:1fr;
-}
-
-.setup{
-  position:fixed;
-  inset:0;
-  background:rgba(245,245,247,.98);
-  backdrop-filter:blur(20px);
-  z-index:200;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-}
-
-.setup.hidden{
-  display:none;
-}
-
-.setup-card{
-  width:min(450px,100%);
-  background:white;
-  border-radius:30px;
-  padding:24px;
-  box-shadow:0 25px 80px rgba(0,0,0,.16);
-}
-
-.setup-card h1{
-  margin:0;
-  font-size:28px;
-}
-
-.setup-card p{
-  color:#8e8e93;
-  font-size:13px;
-  line-height:1.5;
-}
-
-.field{
-  margin:15px 0;
-}
-
-.field label{
-  display:block;
-  margin-bottom:7px;
-  font-size:13px;
-  color:#636366;
-}
-
-.colors{
-  display:flex;
-  gap:12px;
-}
-
-.color{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  border:3px solid white;
-  box-shadow:0 0 0 1px #ccc;
-}
-
-.color.selected{
-  box-shadow:0 0 0 3px #1c1c1e;
-}
-
-.blue{background:#007aff}
-.red{background:#ff375f}
-.purple{background:#af52de}
-.orange{background:#ff9500}
-.green{background:#34c759}
-
-.hidden{
-  display:none!important;
-}
-
-@media(max-width:480px){
-  .app{
-    padding:10px 10px 30px;
-  }
-
-  .header h1{
-    font-size:24px;
-  }
-
-  .dice{
-    width:85px;
-    height:85px;
-    font-size:53px;
-  }
-
-  .token{
-    width:27px;
-    height:27px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>情侣飞行棋 Pro</title>
+  <style>
+    :root {
+      --bg: #f2f2f7;
+      --card: #ffffff;
+      --text: #1c1c1e;
+      --text2: #8e8e93;
+      --primary: #007aff;
+      --danger: #ff3b30;
+      --success: #34c759;
+      --radius: 16px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Noto Sans SC", "PingFang SC", sans-serif;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html, body { height:100%; font-family:var(--font); background:var(--bg); color:var(--text); overflow:hidden; user-select:none; }
+    #app { height:100%; position:relative; }
+    .page { position:absolute; inset:0; display:none; flex-direction:column; background:var(--bg); overflow-y:auto; -webkit-overflow-scrolling:touch; padding:calc(16px + var(--safe-top)) 16px calc(16px + var(--safe-bottom)); }
+    .page.active { display:flex; }
+    .page-content { max-width:440px; margin:0 auto; width:100%; display:flex; flex-direction:column; gap:18px; }
+    .btn { border:none; border-radius:14px; font-size:17px; font-weight:600; padding:14px 20px; cursor:pointer; font-family:var(--font); transition:transform .15s,opacity .15s; }
+    .btn:active { transform:scale(0.97); opacity:0.9; }
+    .btn-primary { background:var(--primary); color:#fff; }
+    .btn-secondary { background:#e5e5ea; color:var(--text); }
+    .btn-danger { background:var(--danger); color:#fff; }
+    .btn-large { width:100%; padding:16px; font-size:18px; }
+    .btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .icon-btn { background:none; border:none; font-size:22px; padding:8px; cursor:pointer; }
+    .logo { text-align:center; font-size:26px; font-weight:700; margin-top:12px; }
+    .logo span { color:var(--primary); }
+    .card { background:var(--card); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); }
+    .rules-list { padding-left:18px; line-height:1.65; font-size:14.5px; }
+    .rules-list li { margin-bottom:8px; }
+    .rules-list strong { color:var(--primary); }
+    .page-title { text-align:center; font-size:22px; font-weight:700; }
+    .players-setup { display:flex; align-items:center; gap:10px; }
+    .player-card { flex:1; background:var(--card); border-radius:var(--radius); padding:16px 10px; text-align:center; box-shadow:var(--shadow); }
+    .player-avatar { width:56px; height:56px; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; color:#fff; transition:background .2s; }
+    .player-name-input { width:100%; border:none; background:#f2f2f7; border-radius:10px; padding:9px; font-size:15px; text-align:center; font-family:var(--font); margin-bottom:10px; }
+    .player-name-input:focus { outline:2px solid var(--primary); }
+    .color-picker { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+    .color-dot { width:24px; height:24px; border-radius:50%; cursor:pointer; border:2.5px solid transparent; }
+    .color-dot.active { border-color:#1c1c1e; transform:scale(1.12); }
+    .vs { font-weight:700; color:var(--text2); font-size:16px; }
+    .option-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+    .option-row:last-child { margin-bottom:0; }
+    .segmented { display:flex; background:#e5e5ea; border-radius:10px; padding:3px; }
+    .segmented button { border:none; background:transparent; padding:7px 12px; border-radius:8px; font-size:13px; font-weight:500; font-family:var(--font); cursor:pointer; }
+    .segmented button.active { background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+    #page-game { padding:0; }
+    .game-header { display:flex; align-items:center; justify-content:space-between; padding:calc(10px + var(--safe-top)) 14px 10px; background:rgba(255,255,255,0.88); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid rgba(0,0,0,0.05); z-index:10; }
+    .turn-indicator { display:flex; align-items:center; gap:8px; font-weight:600; font-size:15px; }
+    .turn-dot { width:11px; height:11px; border-radius:50%; background:#ccc; transition:background .3s; }
+    .board-wrap { flex:1; overflow:hidden; display:flex; align-items:center; justify-content:center; padding:8px; }
+    .board { position:relative; width:min(94vw, 360px); height:min(94vw, 360px); background:var(--card); border-radius:50%; box-shadow:var(--shadow); }
+    .cell { position:absolute; width:28px; height:28px; border-radius:50%; background:#e8e8ed; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:var(--text2); transform:translate(-50%,-50%); z-index:1; }
+    .cell.fly { background:#ffd60a; color:#1c1c1e; font-size:12px; }
+    .cell.rest { background:#bf5af2; color:#fff; font-size:12px; }
+    .piece { position:absolute; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; transform:translate(-50%,-50%); z-index:5; box-shadow:0 2px 6px rgba(0,0,0,0.25); transition:left .45s cubic-bezier(0.34,1.4,0.64,1), top .45s cubic-bezier(0.34,1.4,0.64,1); }
+    .finish { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#ff3b30,#ff9500); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; box-shadow:0 4px 14px rgba(255,59,48,0.35); z-index:3; }
+    .game-footer { background:rgba(255,255,255,0.92); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-top:1px solid rgba(0,0,0,0.05); padding:10px 14px calc(10px + var(--safe-bottom)); display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .skill-bar { display:flex; gap:6px; min-height:32px; flex-wrap:wrap; justify-content:center; }
+    .skill-card { background:linear-gradient(135deg,#5856d6,#007aff); color:#fff; font-size:11px; padding:5px 10px; border-radius:16px; font-weight:500; cursor:pointer; }
+    .dice-area { display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .dice-btn { width:72px; height:72px; border-radius:18px; border:none; background:var(--card); box-shadow:0 5px 16px rgba(0,0,0,0.12); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .dice-btn:active { transform:scale(0.95); }
+    .dice-btn:disabled { opacity:0.5; }
+    .dice { width:50px; height:50px; background:#1c1c1e; border-radius:11px; color:#fff; font-size:26px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+    .dice.rolling { animation:diceRoll .12s infinite; }
+    @keyframes diceRoll { 0%{transform:rotate(0) scale(1)} 50%{transform:rotate(12deg) scale(1.08)} 100%{transform:rotate(-12deg) scale(1)} }
+    .dice-hint { font-size:12px; color:var(--text2); }
+    .action-row { display:flex; gap:10px; }
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); display:flex; align-items:flex-end; justify-content:center; z-index:100; animation:fadeIn .22s ease; }
+    .modal-overlay.center { align-items:center; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .modal { background:var(--card); border-radius:20px 20px 0 0; width:100%; max-width:440px; padding:22px 18px calc(20px + var(--safe-bottom)); animation:slideUp .28s cubic-bezier(0.32,0.72,0,1); max-height:86vh; overflow-y:auto; }
+    .modal-overlay.center .modal { border-radius:20px; margin:16px; animation:scaleIn .22s ease; }
+    @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+    @keyframes scaleIn { from{transform:scale(0.92);opacity:0} to{transform:scale(1);opacity:1} }
+    .modal-title { font-size:19px; font-weight:700; text-align:center; margin-bottom:6px; }
+    .modal-sub { text-align:center; color:var(--text2); font-size:13px; margin-bottom:14px; }
+    .modal-body { margin-bottom:18px; line-height:1.55; font-size:15.5px; text-align:center; }
+    .modal-actions { display:flex; flex-direction:column; gap:9px; }
+    .modal-actions .btn { flex:1; }
+    .blind-box { width:130px; height:168px; margin:0 auto 16px; perspective:700px; }
+    .blind-card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform .55s cubic-bezier(0.4,0.2,0.2,1); }
+    .blind-card.flipped { transform:rotateY(180deg); }
+    .blind-face { position:absolute; inset:0; backface-visibility:hidden; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:600; }
+    .blind-back { background:linear-gradient(135deg,#5856d6,#007aff); color:#fff; }
+    .blind-front { background:#fff; border:2px solid #e5e5ea; transform:rotateY(180deg); flex-direction:column; padding:12px; text-align:center; font-size:14px; line-height:1.35; }
+    .blind-front.gentle { border-color:#34c759; }
+    .blind-front.normal { border-color:#007aff; }
+    .blind-front.hot { border-color:#ff3b30; box-shadow:0 0 16px rgba(255,59,48,0.25); }
+    .timer-circle { width:90px; height:90px; margin:12px auto; border-radius:50%; background:conic-gradient(var(--primary) var(--progress), #e5e5ea 0); display:flex; align-items:center; justify-content:center; position:relative; }
+    .timer-circle::before { content:''; position:absolute; inset:7px; background:#fff; border-radius:50%; }
+    .timer-text { position:relative; font-size:22px; font-weight:700; color:var(--primary); }
+    #toast { position:fixed; top:18%; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.78); color:#fff; padding:9px 18px; border-radius:18px; font-size:13.5px; z-index:200; opacity:0; transition:opacity .25s; max-width:82%; text-align:center; pointer-events:none; }
+  </style>
 </head>
-
 <body>
-
-<div id="setup" class="setup">
-  <div class="setup-card">
-    <h1>💕 情侣飞行棋</h1>
-    <p>
-      V2.0<br>
-      在传统飞行棋基础上加入任务、幸运、相遇攻击和特殊效果。
-    </p>
-
-    <div class="field">
-      <label>玩家 1 名称</label>
-      <input id="name1" class="input" value="玩家 1">
-    </div>
-
-    <div class="field">
-      <label>玩家 1 棋子颜色</label>
-      <div class="colors">
-        <button class="color blue selected" data-player="1" data-color="#007aff"></button>
-        <button class="color purple" data-player="1" data-color="#af52de"></button>
-        <button class="color orange" data-player="1" data-color="#ff9500"></button>
+  <div id="app">
+    <section id="page-rules" class="page active">
+      <div class="page-content">
+        <h1 class="logo">情侣飞行棋 <span>Pro</span></h1>
+        <div class="card">
+          <h2 style="text-align:center;font-size:18px;margin-bottom:12px;">游戏规则</h2>
+          <ol class="rules-list">
+            <li>双人轮流，共用一台手机。</li>
+            <li>准备好酒水和可脱的衣服。</li>
+            <li>必须摇到 <strong>6</strong> 才能出发，1～5 执行小互动。</li>
+            <li>棋盘 48 格，盲盒形式，落地后才揭晓任务。</li>
+            <li>限时任务自动倒计时，到时震动。</li>
+            <li>可「完成」或「跳过（喝一杯）」。</li>
+            <li>相遇：可进攻打回基地，或善良获得奖励/技能牌。</li>
+            <li>技能牌可收集，自己决定何时使用。</li>
+            <li>先到终点获胜，生成战报。</li>
+          </ol>
+        </div>
+        <button class="btn btn-primary btn-large" id="btn-rules">我已了解，开始</button>
       </div>
-    </div>
+    </section>
 
-    <div class="field">
-      <label>玩家 2 名称</label>
-      <input id="name2" class="input" value="玩家 2">
-    </div>
-
-    <div class="field">
-      <label>玩家 2 棋子颜色</label>
-      <div class="colors">
-        <button class="color red selected" data-player="2" data-color="#ff375f"></button>
-        <button class="color green" data-player="2" data-color="#34c759"></button>
-        <button class="color purple" data-player="2" data-color="#af52de"></button>
+    <section id="page-setup" class="page">
+      <div class="page-content">
+        <h1 class="page-title">玩家设置</h1>
+        <div class="players-setup">
+          <div class="player-card">
+            <div class="player-avatar" id="av0">小</div>
+            <input class="player-name-input" id="name0" value="小锐" maxlength="6">
+            <div class="color-picker" id="col0"></div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="player-card">
+            <div class="player-avatar" id="av1">可</div>
+            <input class="player-name-input" id="name1" value="小可爱" maxlength="6">
+            <div class="color-picker" id="col1"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="option-row">
+            <span style="font-size:14px;">任务强度</span>
+            <div class="segmented" id="intensity">
+              <button data-v="gentle">温柔</button>
+              <button data-v="normal" class="active">正常</button>
+              <button data-v="hot">刺激</button>
+            </div>
+          </div>
+          <div class="option-row">
+            <span style="font-size:14px;">音效震动</span>
+            <div class="segmented" id="sound">
+              <button data-v="on" class="active">开启</button>
+              <button data-v="off">关闭</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-large" id="btn-start">进入游戏</button>
       </div>
-    </div>
+    </section>
 
-    <button id="startBtn" class="primary" style="width:100%">
-      开始游戏
-    </button>
-  </div>
-</div>
-
-
-<div id="eventOverlay" class="overlay">
-  <div class="modal">
-    <h2 id="eventTitle">事件</h2>
-    <p id="eventText"></p>
-    <div id="eventButtons" class="modal-buttons one"></div>
-  </div>
-</div>
-
-
-<div class="app">
-
-  <div class="header">
-    <h1>💕 情侣飞行棋</h1>
-    <p>V2.0 · 一部手机，两个人一起玩</p>
-  </div>
-
-
-  <div class="card">
-    <div class="players">
-
-      <div id="player1Card" class="player active">
-        <span id="dot1" class="player-dot" style="background:#007aff"></span>
-        <strong id="displayName1">玩家 1</strong>
-        <div style="font-size:12px;color:#8e8e93;margin-top:5px">
-          第 <span id="pos1">0</span> 格
+    <section id="page-game" class="page">
+      <header class="game-header">
+        <div class="turn-indicator">
+          <span class="turn-dot" id="turnDot"></span>
+          <span id="turnText">准备中</span>
+        </div>
+        <button class="icon-btn" id="btnSet">⚙️</button>
+      </header>
+      <div class="board-wrap">
+        <div class="board" id="board">
+          <div class="finish">终点</div>
         </div>
       </div>
-
-      <div id="player2Card" class="player">
-        <span id="dot2" class="player-dot" style="background:#ff375f"></span>
-        <strong id="displayName2">玩家 2</strong>
-        <div style="font-size:12px;color:#8e8e93;margin-top:5px">
-          第 <span id="pos2">0</span> 格
+      <div class="game-footer">
+        <div class="skill-bar" id="skillBar"></div>
+        <div class="dice-area">
+          <button class="dice-btn" id="diceBtn"><div class="dice" id="dice">?</div></button>
+          <p class="dice-hint" id="diceHint">点击掷骰子</p>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-secondary" id="btnReroll" disabled style="padding:10px 16px;font-size:14px;">重掷 (1)</button>
         </div>
       </div>
-
-    </div>
-
-    <div id="status" class="status">
-      玩家 1 的回合
-    </div>
+    </section>
   </div>
-
-
-  <div class="card">
-
-    <div class="board-wrap">
-      <div id="board" class="board">
-
-        <div id="token1" class="token boy"></div>
-        <div id="token2" class="token girl"></div>
-
-      </div>
-    </div>
-
-  </div>
-
-
-  <div class="card dice-area">
-
-    <h3>🎲 掷骰子</h3>
-
-    <div id="dice" class="dice">
-      ⚄
-    </div>
-
-    <div class="actions">
-
-      <button id="rollBtn" class="primary">
-        🎲 掷骰子
-      </button>
-
-      <button id="specialBtn" class="secondary">
-        ✨ 特殊效果
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <div class="card">
-
-    <h3>🎯 当前任务</h3>
-
-    <div id="taskBox" class="task-box">
-      等待进入任务格……
-    </div>
-
-  </div>
-
-
-  <div class="card">
-
-    <h3>📜 游戏记录</h3>
-
-    <div id="log" class="log">
-      <div>游戏还没有开始。</div>
-    </div>
-
-  </div>
-
-
-  <div class="card">
-
-    <h3>⚙️ 游戏设置</h3>
-
-    <div class="settings">
-
-      <button id="saveBtn" class="secondary">
-        💾 保存
-      </button>
-
-      <button id="restartBtn" class="danger">
-        🔄 重新开始
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
+  <div id="toast"></div>
+  <div id="modalRoot"></div>
 
 <script>
-
-const MAX_POS = 30;
-
-const TASKS = [
-
-  "认真说出对方三个优点。",
-  "说出你们最近一次开心的回忆。",
-  "用三个词形容自己。",
-  "给对方一句真诚的鼓励。",
-  "说一个你最喜欢对方的小习惯。",
-  "快速说出三件你们一起做过的事情。",
-  "说一个你们以后想一起完成的计划。",
-  "用一句话描述你理想中的约会。",
-  "模仿对方说一句口头禅。",
-  "说出一个你平时不太好意思说的话。",
-  "回答对方临时提出的一个问题。",
-  "做一个搞笑表情并保持三秒。",
-  "说出你第一次注意到对方时的一个细节。",
-  "说一句你觉得最适合对方的话。",
-  "说一个你希望两个人以后一起尝试的事情。",
-  "快速说出对方的三个喜好。",
-  "讲一个最近发生的小趣事。",
-  "用一句话描述你眼中的对方。",
-  "说出一个你们共同喜欢的东西。",
-  "闭眼三秒，然后说出对方现在可能在想什么。"
-
+const COLORS=["#007aff","#ff2d55","#5856d6","#ff9500","#34c759","#af52de","#ff3b30","#00c7be","#30b0c7","#ffcc00"];
+const TASKS=[
+{id:1,text:"喝半杯",intensity:"gentle",type:"normal"},
+{id:2,text:"为对方脱一件衣服",intensity:"normal",type:"normal"},
+{id:3,text:"亲吻对方嘴唇10秒",intensity:"gentle",type:"normal",time:10},
+{id:4,text:"下一轮休息",intensity:"gentle",type:"rest"},
+{id:5,text:"舌吻30秒",intensity:"normal",type:"normal",time:30},
+{id:6,text:"让对方在你脖子上种一颗草莓",intensity:"normal",type:"normal"},
+{id:7,text:"喝一杯",intensity:"gentle",type:"normal"},
+{id:8,text:"手伸进对方内裤随意抚摸20秒",intensity:"hot",type:"normal",time:20},
+{id:9,text:"为对方口交1分钟",intensity:"hot",type:"fly",time:60},
+{id:10,text:"后退3格并喝半杯",intensity:"normal",type:"normal"},
+{id:11,text:"亲吻对方耳垂+耳根15秒",intensity:"gentle",type:"normal",time:15},
+{id:12,text:"自己脱一件衣服",intensity:"normal",type:"normal"},
+{id:13,text:"与对方拥抱并随意抚摸1分钟",intensity:"normal",type:"normal",time:60},
+{id:14,text:"喝半杯",intensity:"gentle",type:"normal"},
+{id:15,text:"舔对方锁骨到脖子30秒",intensity:"normal",type:"normal",time:30},
+{id:16,text:"下一轮休息",intensity:"gentle",type:"rest"},
+{id:17,text:"用嘴喂对方喝一口酒",intensity:"normal",type:"normal"},
+{id:18,text:"为对方脱一件衣服",intensity:"normal",type:"normal"},
+{id:19,text:"让对方打你屁股3下",intensity:"normal",type:"normal"},
+{id:20,text:"亲吻对方胸口（可隔着衣服）20秒",intensity:"normal",type:"normal",time:20},
+{id:21,text:"喝一杯",intensity:"gentle",type:"normal"},
+{id:22,text:"后入式抽插1分钟",intensity:"hot",type:"fly",time:60},
+{id:23,text:"舌吻并用手爱抚对方1分钟",intensity:"hot",type:"normal",time:60},
+{id:24,text:"后退2格",intensity:"gentle",type:"normal"},
+{id:25,text:"自己脱一件衣服",intensity:"normal",type:"normal"},
+{id:26,text:"舔对方大腿内侧20秒",intensity:"hot",type:"normal",time:20},
+{id:27,text:"下一轮休息",intensity:"gentle",type:"rest"},
+{id:28,text:"喝半杯",intensity:"gentle",type:"normal"},
+{id:29,text:"让对方坐在你脸上，亲吻或舔舐30秒",intensity:"hot",type:"normal",time:30},
+{id:30,text:"为对方口交2分钟",intensity:"hot",type:"fly",time:120},
+{id:31,text:"亲吻对方全身（从上到下）1分钟",intensity:"normal",type:"normal",time:60},
+{id:32,text:"手伸进对方内裤并挑逗30秒",intensity:"hot",type:"normal",time:30},
+{id:33,text:"喝一杯",intensity:"gentle",type:"normal"},
+{id:34,text:"与对方用观音坐莲姿势互动1分钟",intensity:"hot",type:"normal",time:60},
+{id:35,text:"为对方脱一件衣服",intensity:"normal",type:"normal"},
+{id:36,text:"下一轮休息",intensity:"gentle",type:"rest"},
+{id:37,text:"用舌头挑逗对方耳朵+脖子20秒",intensity:"normal",type:"normal",time:20},
+{id:38,text:"自己脱一件衣服",intensity:"normal",type:"normal"},
+{id:39,text:"让对方在你身上任意亲吻30秒",intensity:"normal",type:"normal",time:30},
+{id:40,text:"喝半杯",intensity:"gentle",type:"normal"},
+{id:41,text:"拥抱从背后爱抚对方1分钟",intensity:"normal",type:"normal",time:60},
+{id:42,text:"舔或吸吮对方乳头30秒",intensity:"hot",type:"normal",time:30},
+{id:43,text:"为对方口交或用手服务2分钟",intensity:"hot",type:"fly",time:120},
+{id:44,text:"后退3格并脱一件衣服",intensity:"normal",type:"normal"},
+{id:45,text:"深情舌吻40秒",intensity:"normal",type:"normal",time:40},
+{id:46,text:"喝一杯",intensity:"gentle",type:"normal"},
+{id:47,text:"自由选择：为对方做一件他/她想要的事（1分钟）",intensity:"normal",type:"normal",time:60},
+{id:48,text:"终点冲刺：与对方激烈亲吻+爱抚1分钟",intensity:"hot",type:"normal",time:60}
 ];
-
-
-const DICE = [
-  "⚀",
-  "⚁",
-  "⚂",
-  "⚃",
-  "⚄",
-  "⚅"
-];
-
-
-const game = {
-
-  started:false,
-
-  over:false,
-
-  current:1,
-
-  players:{
-    1:{
-      name:"玩家 1",
-      pos:0,
-      color:"#007aff"
-    },
-
-    2:{
-      name:"玩家 2",
-      pos:0,
-      color:"#ff375f"
-    }
-  },
-
-  taskCells:[],
-  luckyCells:[],
-
-  extraRoll:false,
-
-  forcedAttack:false
-
-};
-
-
-const $ = id => document.getElementById(id);
-
-
-function random(min,max){
-
-  return Math.floor(
-    Math.random()*(max-min+1)
-  )+min;
-
-}
-
-
-function shuffle(array){
-
-  return array
-    .map(v=>({v,sort:Math.random()}))
-    .sort((a,b)=>a.sort-b.sort)
-    .map(x=>x.v);
-
-}
-
-
-function addLog(text){
-
-  const log = $("log");
-
-  const item = document.createElement("div");
-
-  item.textContent = text;
-
-  log.prepend(item);
-
-}
-
-
-function status(text){
-
-  $("status").textContent = text;
-
-}
-
-
-function updatePlayers(){
-
-  $("displayName1").textContent =
-    game.players[1].name;
-
-  $("displayName2").textContent =
-    game.players[2].name;
-
-  $("pos1").textContent =
-    game.players[1].pos;
-
-  $("pos2").textContent =
-    game.players[2].pos;
-
-  $("dot1").style.background =
-    game.players[1].color;
-
-  $("dot2").style.background =
-    game.players[2].color;
-
-  $("player1Card").classList.toggle(
-    "active",
-    game.current===1
-  );
-
-  $("player2Card").classList.toggle(
-    "active",
-    game.current===2
-  );
-
-  $("token1").style.background =
-    game.players[1].color;
-
-  $("token2").style.background =
-    game.players[2].color;
-
-}
-
-
-function createBoard(){
-
-  const board = $("board");
-
-  board.querySelectorAll(".cell").forEach(
-    x=>x.remove()
-  );
-
-
-  const cells = [];
-
-
-  for(let i=0;i<=MAX_POS;i++){
-
-    let x;
-    let y;
-
-
-    if(i<=10){
-
-      x = 8 + i*8.4;
-      y = 88;
-
-    }
-
-    else if(i<=20){
-
-      x = 92;
-      y = 88-(i-10)*7.5;
-
-    }
-
-    else{
-
-      x = 92-(i-20)*8.4;
-      y = 13;
-
-    }
-
-
-    cells.push({x,y});
-
-
-    const cell =
-      document.createElement("div");
-
-    cell.className = "cell";
-
-    if(i===0){
-
-      cell.classList.add("start");
-      cell.textContent = "起点";
-
-    }
-    else if(i===MAX_POS){
-
-      cell.classList.add("end");
-      cell.textContent = "🏆";
-
-    }
-    else{
-
-      cell.textContent = i;
-
-    }
-
-
-    cell.style.left = x+"%";
-    cell.style.top = y+"%";
-
-    cell.dataset.pos = i;
-
-    board.appendChild(cell);
-
-  }
-
-
-  game.boardCells = cells;
-
-  markSpecialCells();
-
-  updateTokens();
-
-}
-
-
-function markSpecialCells(){
-
-  document
-    .querySelectorAll(".cell")
-    .forEach(cell=>{
-
-      const p =
-        Number(cell.dataset.pos);
-
-      cell.classList.remove(
-        "task",
-        "lucky"
-      );
-
-
-      if(game.taskCells.includes(p)){
-
-        cell.classList.add("task");
-
-        cell.textContent = "🎯";
-
-      }
-
-      else if(game.luckyCells.includes(p)){
-
-        cell.classList.add("lucky");
-
-        cell.textContent = "🍀";
-
-      }
-
+const START_ACT={1:"喝一口酒",2:"亲吻对方脸颊",3:"拥抱对方10秒",4:"喝一口酒",5:"亲吻对方嘴唇"};
+const SKILLS=[{id:"acc",name:"加速卡"},{id:"int",name:"干扰卡"},{id:"shd",name:"免死金牌"},{id:"trf",name:"嫁祸卡"},{id:"rer",name:"重掷卡"},{id:"swp",name:"互换卡"},{id:"dbl",name:"双倍卡"}];
+const KIND_RW=["前进2格","前进3格","获得技能牌","指定对方喝半杯","让对方脱一件","免去下次任务","额外掷一次"];
+
+const S={page:"rules",players:[{name:"小锐",color:COLORS[0],pos:-1,skills:[],skipNext:false,stats:st()},{name:"小可爱",color:COLORS[1],pos:-1,skills:[],skipNext:false,stats:st()}],cur:0,intensity:"normal",sound:true,started:[false,false],reroll:1,over:false,doubleNext:false};
+function st(){return{steps:0,drinks:0,strips:0,intimate:0,skips:0,attacks:0,skills:0};}
+
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+function toast(m){const t=$("#toast");t.textContent=m;t.style.opacity="1";clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity="0",2000);}
+function vibe(ms=30){if(S.sound&&navigator.vibrate)navigator.vibrate(ms);}
+function beep(freq=800,dur=0.08){if(!S.sound)return;try{const ctx=window._actx||(window._actx=new(window.AudioContext||window.webkitAudioContext)());const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=freq;g.gain.value=0.08;o.start();o.stop(ctx.currentTime+dur);}catch(e){}}
+
+function show(name){$$(".page").forEach(p=>p.classList.remove("active"));$(`#page-${name}`).classList.add("active");S.page=name;}
+
+function init(){
+  [0,1].forEach(pid=>{
+    const box=$(`#col${pid}`);box.innerHTML="";
+    COLORS.forEach(c=>{
+      const d=document.createElement("div");
+      d.className="color-dot"+(S.players[pid].color===c?" active":"");
+      d.style.background=c;
+      d.onclick=()=>{S.players[pid].color=c;$(`#av${pid}`).style.background=c;init();};
+      box.appendChild(d);
     });
-
-}
-
-
-function updateTokens(){
-
-  if(!game.boardCells) return;
-
-
-  [1,2].forEach(player=>{
-
-    const pos =
-      game.players[player].pos;
-
-    const point =
-      game.boardCells[
-        Math.min(pos,MAX_POS)
-      ];
-
-
-    const token =
-      $("token"+player);
-
-
-    token.style.left =
-      point.x+"%";
-
-    token.style.top =
-      point.y+"%";
-
+    $(`#av${pid}`).style.background=S.players[pid].color;
+    $(`#av${pid}`).textContent=S.players[pid].name[0];
   });
-
-
-  updatePlayers();
-
+  $("#btn-rules").onclick=()=>show("setup");
+  $("#name0").oninput=e=>{S.players[0].name=e.target.value.trim()||"小锐";$("#av0").textContent=S.players[0].name[0];};
+  $("#name1").oninput=e=>{S.players[1].name=e.target.value.trim()||"小可爱";$("#av1").textContent=S.players[1].name[0];};
+  $$("#intensity button").forEach(b=>b.onclick=()=>{$$("#intensity button").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.intensity=b.dataset.v;});
+  $$("#sound button").forEach(b=>b.onclick=()=>{$$("#sound button").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.sound=b.dataset.v==="on";});
+  $("#btn-start").onclick=startGame;
+  $("#diceBtn").onclick=roll;
+  $("#btnReroll").onclick=()=>{if(S.reroll>0){S.reroll--;updateTurn();roll();}};
+  $("#btnSet").onclick=openSet;
 }
-
-
-function generateSpecialCells(){
-
-  const available=[];
-
-
-  for(
-    let i=2;
-    i<MAX_POS;
-    i++
-  ){
-
-    available.push(i);
-
-  }
-
-
-  const shuffled =
-    shuffle(available);
-
-
-  const taskCount =
-    random(4,8);
-
-
-  game.taskCells =
-    shuffled.slice(
-      0,
-      taskCount
-    );
-
-
-  game.luckyCells =
-    shuffled.slice(
-      taskCount,
-      taskCount+5
-    );
-
-
-  markSpecialCells();
-
-}
-
-
-function showSetup(){
-
-  $("setup")
-    .classList
-    .remove("hidden");
-
-}
-
-
-function hideSetup(){
-
-  $("setup")
-    .classList
-    .add("hidden");
-
-}
-
-
-document
-  .querySelectorAll(".color")
-  .forEach(button=>{
-
-    button.addEventListener(
-      "click",
-      ()=>{
-
-        const player =
-          button.dataset.player;
-
-        const color =
-          button.dataset.color;
-
-
-        document
-          .querySelectorAll(
-            `.color[data-player="${player}"]`
-          )
-          .forEach(
-            b=>b.classList.remove("selected")
-          );
-
-
-        button.classList.add("selected");
-
-        game.players[player].color =
-          color;
-
-      }
-    );
-
-  });
-
-
-$("startBtn").addEventListener(
-  "click",
-  startGame
-);
-
 
 function startGame(){
-
-  game.players[1].name =
-    $("name1").value.trim() ||
-    "玩家 1";
-
-  game.players[2].name =
-    $("name2").value.trim() ||
-    "玩家 2";
-
-
-  game.players[1].pos=0;
-  game.players[2].pos=0;
-
-  game.current=1;
-
-  game.over=false;
-
-  game.extraRoll=false;
-
-  game.forcedAttack=false;
-
-  game.started=true;
-
-
-  generateSpecialCells();
-
-  createBoard();
-
-  updateTokens();
-
-  $("taskBox").textContent =
-    "等待进入任务格……";
-
-
-  $("log").innerHTML =
-    "<div>🎮 新游戏开始。</div>";
-
-
-  addLog(
-    `${game.players[1].name}先开始。`
-  );
-
-
-  hideSetup();
-
-  status(
-    `${game.players[1].name} 的回合`
-  );
-
-
-  saveGame();
-
+  S.players[0].name=$("#name0").value.trim()||"小锐";
+  S.players[1].name=$("#name1").value.trim()||"小可爱";
+  S.cur=0;S.started=[false,false];S.reroll=1;S.over=false;S.doubleNext=false;
+  S.players.forEach(p=>{p.pos=-1;p.skills=[];p.skipNext=false;p.stats=st();});
+  buildBoard();updateTurn();show("game");
+  toast(S.players[0].name+" 先手，摇到6出发");beep(600,0.1);
 }
 
-
-function showModal(
-  title,
-  text,
-  buttons
-){
-
-  $("eventTitle").textContent =
-    title;
-
-  $("eventText").textContent =
-    text;
-
-
-  const box =
-    $("eventButtons");
-
-  box.innerHTML="";
-
-
-  buttons.forEach(button=>{
-
-    const b =
-      document.createElement("button");
-
-    b.textContent =
-      button.text;
-
-    b.className =
-      button.className ||
-      "secondary";
-
-
-    b.addEventListener(
-      "click",
-      ()=>{
-
-        closeModal();
-
-        button.action();
-
-      }
-    );
-
-
-    box.appendChild(b);
-
+function buildBoard(){
+  const board=$("#board");
+  $$(".cell,.piece").forEach(e=>e.remove());
+  for(let i=0;i<48;i++){
+    const a=(i/48)*Math.PI*2-Math.PI/2;
+    const x=50+42*Math.cos(a),y=50+42*Math.sin(a);
+    const c=document.createElement("div");
+    c.className="cell";c.style.left=x+"%";c.style.top=y+"%";
+    const t=TASKS[i];
+    if(t.type==="fly"){c.classList.add("fly");c.textContent="✈️";}
+    else if(t.type==="rest"){c.classList.add("rest");c.textContent="😴";}
+    else c.textContent=i+1;
+    board.appendChild(c);
+  }
+  S.players.forEach((p,pid)=>{
+    const el=document.createElement("div");
+    el.className="piece";el.id="pc"+pid;
+    el.style.background=p.color;el.textContent=p.name[0];
+    el.style.left=(pid?82:18)+"%";el.style.top="50%";
+    board.appendChild(el);
   });
-
-
-  $("eventOverlay")
-    .classList
-    .add("show");
-
+}
+function movePiece(pid){
+  const p=S.players[pid],el=$("#pc"+pid);
+  if(!el)return;
+  if(p.pos<0){el.style.left=(pid?82:18)+"%";el.style.top="50%";return;}
+  if(p.pos>=48){el.style.left="50%";el.style.top="50%";return;}
+  const a=(p.pos/48)*Math.PI*2-Math.PI/2;
+  el.style.left=(50+42*Math.cos(a))+"%";el.style.top=(50+42*Math.sin(a))+"%";
 }
 
-
-function closeModal(){
-
-  $("eventOverlay")
-    .classList
-    .remove("show");
-
+function updateTurn(){
+  const p=S.players[S.cur];
+  $("#turnDot").style.background=p.color;
+  $("#turnText").textContent=p.name+" 的回合";
+  $("#btnReroll").disabled=S.reroll<=0;
+  $("#btnReroll").textContent=`重掷 (${S.reroll})`;
+  renderSkills();
+}
+function renderSkills(){
+  const bar=$("#skillBar");bar.innerHTML="";
+  S.players[S.cur].skills.forEach((sid,idx)=>{
+    const sk=SKILLS.find(s=>s.id===sid);
+    if(!sk)return;
+    const el=document.createElement("div");
+    el.className="skill-card";el.textContent=sk.name;
+    el.onclick=()=>useSkill(sid,idx);
+    bar.appendChild(el);
+  });
 }
 
-
-function rollDice(){
-
-  if(!game.started) return;
-
-  if(game.over) return;
-
-
-  const player =
-    game.current;
-
-
-  const dice =
-    $("dice");
-
-
-  const roll =
-    random(1,6);
-
-
-  dice.classList.remove(
-    "rolling"
-  );
-
-
-  void dice.offsetWidth;
-
-
-  dice.classList.add(
-    "rolling"
-  );
-
-
-  dice.textContent =
-    DICE[roll-1];
-
-
-  status(
-    `${game.players[player].name} 掷出了 ${roll}`
-  );
-
-
-  addLog(
-    `${game.players[player].name} 掷出了 ${roll} 点。`
-  );
-
-
-  setTimeout(
-    ()=>movePlayer(
-      player,
-      roll
-    ),
-    650
-  );
-
+let rolling=false;
+function roll(){
+  if(rolling||S.over)return;
+  rolling=true;$("#diceBtn").disabled=true;
+  const d=$("#dice");d.classList.add("rolling");
+  vibe(25);beep(400,0.05);
+  let n=0;
+  const iv=setInterval(()=>{
+    d.textContent=1+Math.floor(Math.random()*6);
+    if(++n>14){
+      clearInterval(iv);d.classList.remove("rolling");
+      const r=1+Math.floor(Math.random()*6);
+      d.textContent=r;
+      setTimeout(()=>{handleRoll(r);rolling=false;$("#diceBtn").disabled=false;},350);
+    }
+  },70);
 }
-
-
-function movePlayer(
-  player,
-  steps
-){
-
-  if(game.over) return;
-
-
-  const p =
-    game.players[player];
-
-
-  const start =
-    p.pos;
-
-
-  const target =
-    Math.min(
-      MAX_POS,
-      start+steps
-    );
-
-
-  let current =
-    start;
-
-
-  const timer =
-    setInterval(()=>{
-
-      current++;
-
-      p.pos =
-        current;
-
-      updateTokens();
-
-
-      if(current>=target){
-
-        clearInterval(timer);
-
-        finishMovement(player);
-
-      }
-
-    },220);
-
-}
-
-
-function finishMovement(player){
-
-  const p =
-    game.players[player];
-
-
-  if(p.pos>=MAX_POS){
-
-    win(player);
-
+function handleRoll(num){
+  const pid=S.cur,p=S.players[pid];
+  if(!S.started[pid]){
+    if(num===6){
+      S.started[pid]=true;p.pos=0;movePiece(pid);
+      toast(p.name+" 出发！");beep(900,0.12);
+      setTimeout(()=>land(pid),450);
+    }else{
+      modal({title:`摇到 ${num}`,body:START_ACT[num],actions:[{t:"完成",p:1,fn:next}]});
+    }
     return;
-
   }
+  let step=num;
+  if(S.doubleNext){step*=2;S.doubleNext=false;toast("双倍生效！");}
+  go(pid,step);
+}
+function go(pid,step){
+  const p=S.players[pid];
+  p.pos+=step;p.stats.steps+=step;
+  if(p.pos>=48){p.pos=48;movePiece(pid);setTimeout(()=>endGame(pid),500);return;}
+  movePiece(pid);
+  const oid=1-pid;
+  if(S.players[oid].pos===p.pos&&p.pos>=0){setTimeout(()=>meet(pid,oid),450);return;}
+  setTimeout(()=>land(pid),450);
+}
 
-
-  const other =
-    player===1 ? 2 : 1;
-
-
-  if(
-    game.players[other].pos===
-    p.pos
-  ){
-
-    encounter(
-      player,
-      other
-    );
-
+function land(pid){
+  const p=S.players[pid];
+  if(p.pos<0||p.pos>=48)return;
+  if(p.skipNext){p.skipNext=false;toast("免死金牌生效");next();return;}
+  let task=TASKS[p.pos];
+  if(S.intensity==="gentle"&&task.intensity==="hot"){
+    task={...task,text:"喝半杯（已过滤刺激内容）",intensity:"gentle",time:0};
+  }
+  const ov=document.createElement("div");
+  ov.className="modal-overlay center";
+  ov.innerHTML=`<div class="modal"><div class="modal-title">开盲盒</div><div class="blind-box"><div class="blind-card" id="bc"><div class="blind-face blind-back">?</div><div class="blind-face blind-front ${task.intensity}">${task.text}</div></div></div><div class="modal-actions"><button class="btn btn-primary" id="bf">翻开</button></div></div>`;
+  $("#modalRoot").appendChild(ov);
+  $("#bf").onclick=()=>{
+    $("#bc").classList.add("flipped");vibe([20,40,20]);beep(700,0.1);
+    $("#bf").textContent="查看任务";
+    $("#bf").onclick=()=>{ov.remove();taskModal(task,pid);};
+  };
+}
+function taskModal(task,pid){
+  let th="";
+  if(task.time)th=`<div class="timer-circle" id="tm" style="--progress:100%"><div class="timer-text">${task.time}</div></div>`;
+  modal({
+    title:`第 ${task.id} 格`,
+    sub:{gentle:"温柔",normal:"正常",hot:"刺激"}[task.intensity]||"",
+    body:`<div style="font-size:17px;font-weight:600;margin-bottom:10px;">${task.text}</div>${th}`,
+    actions:[{t:"完成任务",p:1,fn:()=>done(task,pid)},{t:"跳过（喝一杯）",fn:()=>skip(pid)}]
+  });
+  if(task.time){
+    let left=task.time,total=task.time;
+    const iv=setInterval(()=>{
+      left--;
+      const el=$("#tm"),tx=el?.querySelector(".timer-text");
+      if(tx)tx.textContent=left;
+      if(el)el.style.setProperty("--progress",(left/total*100)+"%");
+      if(left<=0){clearInterval(iv);vibe([180,80,180]);beep(300,0.2);}
+    },1000);
+    window._tiv=iv;
+  }
+}
+function done(task,pid){
+  if(window._tiv)clearInterval(window._tiv);
+  const p=S.players[pid];
+  if(task.text.includes("喝"))p.stats.drinks++;
+  if(task.text.includes("脱"))p.stats.strips++;
+  if(task.intensity==="hot")p.stats.intimate++;
+  if(task.type==="fly"){
+    modal({title:"飞跃机会",body:"是否使用飞跃 +6 格？",actions:[{t:"飞跃！",p:1,fn:()=>go(pid,6)},{t:"不用",fn:next}]});
     return;
-
   }
-
-
-  if(
-    game.taskCells.includes(
-      p.pos
-    )
-  ){
-
-    taskEvent(player);
-
-    return;
-
-  }
-
-
-  if(
-    game.luckyCells.includes(
-      p.pos
-    )
-  ){
-
-    luckyEvent(player);
-
-    return;
-
-  }
-
-
-  nextTurn();
-
+  if(task.text.includes("后退3格")){p.pos=Math.max(0,p.pos-3);movePiece(pid);}
+  else if(task.text.includes("后退2格")){p.pos=Math.max(0,p.pos-2);movePiece(pid);}
+  if(Math.random()<0.22)giveSkill(pid);
+  next();
+}
+function skip(pid){
+  if(window._tiv)clearInterval(window._tiv);
+  S.players[pid].stats.skips++;S.players[pid].stats.drinks++;
+  toast("跳过，喝一杯");next();
 }
 
-
-function taskEvent(player){
-
-  const task =
-    TASKS[
-      random(
-        0,
-        TASKS.length-1
-      )
-    ];
-
-
-  $("taskBox").textContent =
-    task;
-
-
-  showModal(
-    "🎯 当前任务",
-    task,
-    [
-
-      {
-        text:"✅ 完成任务",
-        className:"success",
-        action:()=>{
-
-          addLog(
-            `${game.players[player].name} 完成了任务。`
-          );
-
-
-          showModal(
-            "✨ 任务完成",
-            "不错！继续前进。",
-            [
-              {
-                text:"继续",
-                className:"success",
-                action:nextTurn
-              }
-            ]
-          );
-
-        }
-      },
-
-
-      {
-        text:"❌ 我失败了",
-        className:"danger",
-        action:()=>{
-
-          const penalty =
-            random(1,3);
-
-
-          game.players[player].pos =
-            Math.max(
-              0,
-              game.players[player].pos-
-              penalty
-            );
-
-
-          updateTokens();
-
-
-          addLog(
-            `${game.players[player].name} 任务失败，后退 ${penalty} 格。`
-          );
-
-
-          showModal(
-            "⚠️ 任务失败",
-            `随机惩罚：后退 ${penalty} 格。`,
-            [
-              {
-                text:"接受惩罚",
-                className:"danger",
-                action:()=>{
-
-                  if(
-                    game.taskCells.includes(
-                      game.players[player].pos
-                    )
-                  ){
-
-                    $("taskBox").textContent =
-                      "你后退到了任务格。";
-
-                  }
-
-
-                  nextTurn();
-
-                }
-              }
-            ]
-          );
-
-        }
-      }
-
-    ]
-
-  );
-
+function meet(a,o){
+  const A=S.players[a],O=S.players[o];
+  modal({title:"相遇了！",body:`${A.name} 追上了 ${O.name}`,actions:[
+    {t:"进攻（打回基地）",p:1,fn:()=>{O.pos=-1;S.started[o]=false;movePiece(o);A.stats.attacks++;toast(O.name+" 被打回");setTimeout(()=>land(a),350);}},
+    {t:"善良（随机奖励）",fn:()=>{
+      const r=KIND_RW[Math.floor(Math.random()*KIND_RW.length)];
+      toast("奖励："+r);
+      if(r.includes("前进2"))go(a,2);
+      else if(r.includes("前进3"))go(a,3);
+      else if(r.includes("技能"))giveSkill(a);
+      else if(r.includes("免去"))S.players[a].skipNext=true;
+      else if(r.includes("额外"))setTimeout(roll,500);
+      else setTimeout(()=>land(a),300);
+    }}
+  ]});
 }
 
-
-function luckyEvent(player){
-
-  const good =
-    Math.random()<0.62;
-
-
-  if(good){
-
-    const type =
-      random(1,4);
-
-
-    let text="";
-
-
-    if(type===1){
-
-      text="前进 2 格";
-
-    }
-
-    if(type===2){
-
-      text="获得一次额外掷骰";
-
-    }
-
-    if(type===3){
-
-      text="下一次任务自动完成";
-
-    }
-
-    if(type===4){
-
-      text="获得一次攻击强化";
-
-    }
-
-
-    addLog(
-      `${game.players[player].name} 触发幸运：${text}`
-    );
-
-
-    showModal(
-      "🍀 幸运事件",
-      text,
-      [
-        {
-          text:"太棒了",
-          className:"success",
-          action:()=>{
-
-            if(type===1){
-
-              game.players[player].pos =
-                Math.min(
-                  MAX_POS,
-                  game.players[player].pos+2
-                );
-
-              updateTokens();
-
-            }
-
-
-            if(type===2){
-
-              game.extraRoll=true;
-
-            }
-
-
-            nextTurn();
-
-          }
-        }
-      ]
-    );
-
-  }
-  else{
-
-    const type =
-      random(1,3);
-
-
-    let text="";
-
-
-    if(type===1){
-
-      text="后退 1 格";
-
-    }
-
-    if(type===2){
-
-      text="下一回合不能主动攻击";
-
-    }
-
-    if(type===3){
-
-      text="下一次任务不能选择失败";
-
-    }
-
-
-    addLog(
-      `${game.players[player].name} 触发意外：${text}`
-    );
-
-
-    showModal(
-      "⚠️ 意外效果",
-      text,
-      [
-        {
-          text:"知道了",
-          className:"danger",
-          action:()=>{
-
-            if(type===1){
-
-              game.players[player].pos =
-                Math.max(
-                  0,
-                  game.players[player].pos-1
-                );
-
-              updateTokens();
-
-            }
-
-
-            nextTurn();
-
-          }
-        }
-      ]
-    );
-
-  }
-
+function giveSkill(pid){
+  const have=S.players[pid].skills;
+  const pool=SKILLS.filter(s=>!have.includes(s.id));
+  if(!pool.length)return;
+  const c=pool[Math.floor(Math.random()*pool.length)];
+  S.players[pid].skills.push(c.id);
+  toast("获得「"+c.name+"」");renderSkills();
+}
+function useSkill(id,idx){
+  const pid=S.cur,p=S.players[pid],o=S.players[1-pid];
+  p.skills.splice(idx,1);p.stats.skills++;renderSkills();beep(1000,0.1);
+  if(id==="acc"){const s=2+Math.floor(Math.random()*2);toast("加速 +"+s);go(pid,s);}
+  else if(id==="int"){o.pos=Math.max(-1,o.pos-2);if(o.pos<0)S.started[1-pid]=false;movePiece(1-pid);toast("对方后退2格");}
+  else if(id==="shd"){p.skipNext=true;toast("免死金牌已就绪");}
+  else if(id==="trf"){toast("嫁祸成功");next();}
+  else if(id==="rer"){toast("重掷卡");roll();}
+  else if(id==="swp"){const t=p.pos;p.pos=o.pos;o.pos=t;movePiece(pid);movePiece(1-pid);toast("位置互换");}
+  else if(id==="dbl"){S.doubleNext=true;toast("下轮双倍");}
 }
 
-
-function encounter(
-  player,
-  other
-){
-
-  const name =
-    game.players[player].name;
-
-  const otherName =
-    game.players[other].name;
-
-
-  showModal(
-    "⚔️ 相遇！",
-    `${name} 遇到了 ${otherName}。`,
-    [
-
-      {
-        text:"⚔️ 发动攻击",
-        className:"danger",
-        action:()=>attack(
-          player,
-          other
-        )
-      },
-
-
-      {
-        text:"🎲 随机特殊效果",
-        className:"success",
-        action:()=>specialEffect(
-          player,
-          other
-        )
-      },
-
-
-      {
-        text:"🕊️ 不攻击",
-        className:"secondary",
-        action:()=>{
-
-          addLog(
-            `${name} 选择不攻击。`
-          );
-
-
-          nextTurn();
-
-        }
-      }
-
-    ]
-
-  );
-
+function next(){S.cur=1-S.cur;updateTurn();const p=S.players[S.cur];toast(p.name+(S.started[S.cur]?"":" 的回合，摇到6出发"));}
+function endGame(wid){
+  S.over=true;
+  const W=S.players[wid],L=S.players[1-wid];
+  const hist=JSON.parse(localStorage.getItem("cfc_hist")||"[]");
+  hist.unshift({time:Date.now(),winner:W.name,w:W.stats,l:L.stats,loser:L.name});
+  localStorage.setItem("cfc_hist",JSON.stringify(hist.slice(0,20)));
+  modal({
+    title:"游戏结束",
+    body:`<div style="text-align:left;font-size:14px;line-height:1.75;"><p style="font-size:17px;font-weight:700;text-align:center;margin-bottom:10px;">🎉 ${W.name} 获胜！</p><p><b>${W.name}</b>：${W.stats.steps}步 / 喝${W.stats.drinks} / 脱${W.stats.strips} / 亲密${W.stats.intimate} / 跳过${W.stats.skips} / 进攻${W.stats.attacks}</p><p><b>${L.name}</b>：${L.stats.steps}步 / 喝${L.stats.drinks} / 脱${L.stats.strips} / 亲密${L.stats.intimate} / 跳过${L.stats.skips} / 进攻${L.stats.attacks}</p></div>`,
+    actions:[{t:"再来一局",p:1,fn:()=>{closeM();startGame();}},{t:"返回首页",fn:()=>{closeM();show("rules");}}]
+  });
 }
 
+function modal({title,sub="",body,actions=[]}){
+  closeM();
+  const ov=document.createElement("div");
+  ov.className="modal-overlay";ov.id="cm";
+  ov.innerHTML=`<div class="modal"><div class="modal-title">${title}</div>${sub?`<div class="modal-sub">${sub}</div>`:""}<div class="modal-body">${body}</div><div class="modal-actions">${actions.map(a=>`<button class="btn ${a.p?"btn-primary":"btn-secondary"}">${a.t}</button>`).join("")}</div></div>`;
+  $("#modalRoot").appendChild(ov);
+  ov.querySelectorAll(".btn").forEach((b,i)=>{b.onclick=()=>{closeM();if(actions[i].fn)actions[i].fn();};});
+}
+function closeM(){const m=$("#cm");if(m)m.remove();}
 
-function attack(
-  player,
-  other
-){
-
-  const success =
-    Math.random()<0.68;
-
-
-  if(success){
-
-    const effect =
-      random(1,4);
-
-
-    let text="";
-
-
-    if(effect===1){
-
-      const n=random(2,3);
-
-      game.players[other].pos =
-        Math.max(
-          0,
-          game.players[other].pos-n
-        );
-
-      text =
-        `${game.players[other].name} 后退 ${n} 格。`;
-
-    }
-
-
-    if(effect===2){
-
-      game.players[other].pos =
-        Math.max(
-          0,
-          game.players[other].pos-2
-        );
-
-      text =
-        `${game.players[other].name} 后退 2 格。`;
-
-    }
-
-
-    if(effect===3){
-
-      game.extraRoll=true;
-
-      text =
-        `${game.players[player].name} 获得一次额外掷骰。`;
-
-    }
-
-
-    if(effect===4){
-
-      text =
-        `${game.players[player].name} 下一次任务自动完成。`;
-
-    }
-
-
-    updateTokens();
-
-
-    addLog(
-      `${game.players[player].name} 攻击成功：${text}`
-    );
-
-
-    showModal(
-      "⚔️ 攻击成功",
-      text,
-      [
-        {
-          text:"确定",
-          className:"success",
-          action:()=>{
-
-            if(
-              game.players[other].pos>=
-              MAX_POS
-            ){
-
-              win(other);
-
-            }
-            else{
-
-              nextTurn();
-
-            }
-
-          }
-        }
-      ]
-    );
-
-  }
-  else{
-
-    const penalty =
-      random(2,3);
-
-
-    game.players[player].pos =
-      Math.max(
-        0,
-        game.players[player].pos-
-        penalty
-      );
-
-
-    updateTokens();
-
-
-    addLog(
-      `${game.players[player].name} 攻击失败！${game.players[other].name} 反击，后退 ${penalty} 格。`
-    );
-
-
-    showModal(
-      "💥 攻击失败",
-      `${game.players[other].name} 反击！你后退 ${penalty} 格。`,
-      [
-        {
-          text:"承受反击",
-          className:"danger",
-          action:()=>nextTurn()
-        }
-      ]
-    );
-
-  }
-
+function openSet(){
+  modal({
+    title:"设置",
+    body:`<div style="text-align:left;font-size:14px;line-height:1.8;"><p>当前强度：${{gentle:"温柔",normal:"正常",hot:"刺激"}[S.intensity]}</p><p>音效震动：${S.sound?"开":"关"}</p><p style="color:#8e8e93;margin-top:8px;">战报已自动保存到本地。</p></div>`,
+    actions:[{t:"查看历史战报",fn:showHist},{t:"重新开始",fn:()=>startGame()},{t:"返回规则",fn:()=>show("rules")},{t:"关闭",p:1}]
+  });
+}
+function showHist(){
+  const hist=JSON.parse(localStorage.getItem("cfc_hist")||"[]");
+  if(!hist.length){toast("暂无历史");return;}
+  let html="<div style='text-align:left;font-size:13px;max-height:50vh;overflow:auto;'>";
+  hist.slice(0,8).forEach((h,i)=>{const d=new Date(h.time);html+=`<p style="margin-bottom:8px;"><b>${i+1}. ${h.winner}</b> 胜 ${h.loser}<br><span style="color:#8e8e93">${d.toLocaleString()}</span></p>`;});
+  html+="</div>";
+  modal({title:"历史战报",body:html,actions:[{t:"关闭",p:1}]});
 }
 
-
-function specialEffect(
-  player,
-  other
-){
-
-  const type =
-    random(1,5);
-
-
-  let text="";
-
-
-  if(type===1){
-
-    game.players[player].pos =
-      Math.min(
-        MAX_POS,
-        game.players[player].pos+2
-      );
-
-    text="你前进 2 格。";
-
-  }
-
-
-  if(type===2){
-
-    game.players[other].pos =
-      Math.max(
-        0,
-        game.players[other].pos-2
-      );
-
-    text =
-      `${game.players[other].name} 后退 2 格。`;
-
-  }
-
-
-  if(type===3){
-
-    game.extraRoll=true;
-
-    text =
-      "获得一次额外掷骰机会。";
-
-  }
-
-
-  if(type===4){
-
-    text =
-      "下一次任务自动完成。";
-
-  }
-
-
-  if(type===5){
-
-    game.players[player].pos =
-      Math.max(
-        0,
-        game.players[player].pos-1
-      );
-
-    text =
-      "运气不好，你后退 1 格。";
-
-  }
-
-
-  updateTokens();
-
-
-  addLog(
-    `${game.players[player].name} 触发特殊效果：${text}`
-  );
-
-
-  showModal(
-    "🎲 随机特殊效果",
-    text,
-    [
-      {
-        text:"确定",
-        className:"success",
-        action:()=>nextTurn()
-      }
-    ]
-  );
-
-}
-
-
-function nextTurn(){
-
-  if(game.over) return;
-
-
-  if(game.extraRoll){
-
-    game.extraRoll=false;
-
-    status(
-      `${game.players[game.current].name} 获得额外一次掷骰`
-    );
-
-    saveGame();
-
-    return;
-
-  }
-
-
-  game.current =
-    game.current===1 ? 2 : 1;
-
-
-  status(
-    `${game.players[game.current].name} 的回合`
-  );
-
-
-  updatePlayers();
-
-  saveGame();
-
-}
-
-
-function win(player){
-
-  game.over=true;
-
-
-  addLog(
-    `🏆 ${game.players[player].name} 到达终点，获得胜利！`
-  );
-
-
-  status(
-    `${game.players[player].name} 获胜！`
-  );
-
-
-  showModal(
-    "🏆 恭喜获胜",
-    `${game.players[player].name} 率先到达终点！`,
-    [
-
-      {
-        text:"🔄 再来一局",
-        className:"success",
-        action:restartGame
-      }
-
-    ]
-  );
-
-}
-
-
-function saveGame(){
-
-  if(!game.started) return;
-
-
-  try{
-
-    localStorage.setItem(
-      "couple_flight_chess_v2",
-      JSON.stringify(game)
-    );
-
-  }
-  catch(e){}
-
-}
-
-
-function loadGame(){
-
-  try{
-
-    const raw =
-      localStorage.getItem(
-        "couple_flight_chess_v2"
-      );
-
-
-    if(!raw) return false;
-
-
-    const saved =
-      JSON.parse(raw);
-
-
-    if(!saved.started) return false;
-
-
-    Object.assign(
-      game,
-      saved
-    );
-
-
-    createBoard();
-
-    updateTokens();
-
-    return true;
-
-  }
-  catch(e){
-
-    return false;
-
-  }
-
-}
-
-
-function restartGame(){
-
-  localStorage.removeItem(
-    "couple_flight_chess_v2"
-  );
-
-
-  game.started=false;
-
-  game.over=false;
-
-  game.current=1;
-
-  game.players[1].pos=0;
-
-  game.players[2].pos=0;
-
-  showSetup();
-
-}
-
-
-$("rollBtn").addEventListener(
-  "click",
-  rollDice
-);
-
-
-$("specialBtn").addEventListener(
-  "click",
-  ()=>{
-
-    if(!game.started||game.over)
-      return;
-
-
-    specialEffect(
-      game.current,
-      game.current===1?2:1
-    );
-
-  }
-);
-
-
-$("saveBtn").addEventListener(
-  "click",
-  ()=>{
-
-    saveGame();
-
-    status("✅ 游戏进度已保存");
-
-  }
-);
-
-
-$("restartBtn").addEventListener(
-  "click",
-  ()=>{
-
-    showModal(
-      "🔄 重新开始",
-      "确定要结束当前游戏并重新开始吗？",
-      [
-
-        {
-          text:"确定重新开始",
-          className:"danger",
-          action:restartGame
-        },
-
-        {
-          text:"取消",
-          className:"secondary",
-          action:()=>{}
-        }
-
-      ]
-    );
-
-  }
-);
-
-
-createBoard();
-
-
-if(!loadGame()){
-
-  showSetup();
-
-}
-else{
-
-  $("setup")
-    .classList
-    .add("hidden");
-
-}
-
+document.addEventListener("DOMContentLoaded",init);
 </script>
-
 </body>
 </html>
