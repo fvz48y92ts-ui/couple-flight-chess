@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>情侣飞行棋 V2.0</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif;
+    background:linear-gradient(145deg,#f7f7fa,#eef5ff,#fff0f5);
+    color:#1d1d1f;
+}
+
+button,input{
+    font:inherit;
+}
+
+button{
+    border:0;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.app{
+    max-width:620px;
+    margin:auto;
+    padding:15px 14px 110px;
+}
+
+.glass{
+    background:rgba(255,255,255,.78);
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+    border:1px solid rgba(255,255,255,.9);
+    box-shadow:0 15px 40px rgba(0,0,0,.10);
+    border-radius:26px;
+}
+
+.hero{
+    text-align:center;
+    padding:30px 15px;
+    margin:8px 0 15px;
+}
+
+.logo{
+    font-size:52px;
+}
+
+.title{
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:-1px;
+}
+
+.subtitle{
+    color:#6e6e73;
+    font-size:14px;
+    margin-top:5px;
+}
+
+.card{
+    padding:18px;
+    margin:14px 0;
+}
+
+.label{
+    color:#6e6e73;
+    font-size:13px;
+    margin:10px 0 7px;
+}
+
+input{
+    width:100%;
+    height:50px;
+    border-radius:15px;
+    border:1px solid rgba(60,60,67,.18);
+    padding:0 15px;
+    font-size:17px;
+    outline:none;
+    background:white;
+}
+
+.primary,
+.secondary{
+    width:100%;
+    height:52px;
+    border-radius:17px;
+    font-weight:700;
+    margin-top:12px;
+}
+
+.primary{
+    background:#0a84ff;
+    color:white;
+}
+
+.secondary{
+    background:rgba(118,118,128,.12);
+}
+
+.error{
+    color:#d70035;
+    font-size:13px;
+    margin-top:7px;
+}
+
+.colors{
+    display:flex;
+    gap:11px;
+    flex-wrap:wrap;
+}
+
+.color{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    border:3px solid transparent;
+}
+
+.color.selected{
+    border-color:white;
+    outline:3px solid #1d1d1f;
+}
+
+.confirm{
+    display:flex;
+    justify-content:space-between;
+    padding:14px 0;
+    border-bottom:1px solid #ddd;
+}
+
+.confirm:last-child{
+    border-bottom:0;
+}
+
+.dot{
+    display:inline-block;
+    width:19px;
+    height:19px;
+    border-radius:50%;
+    vertical-align:middle;
+    margin-right:7px;
+}
+
+.game-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:6px 0 10px;
+}
+
+.turn{
+    font-weight:800;
+    font-size:17px;
+}
+
+.round{
+    color:#6e6e73;
+    font-size:12px;
+    text-align:right;
+}
+
+.pause{
+    width:auto;
+    height:35px;
+    padding:0 13px;
+    margin-top:5px;
+}
+
+.board-box{
+    padding:9px;
+}
+
+.board{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+    aspect-ratio:1;
+    padding:6px;
+    border-radius:23px;
+    background:linear-gradient(135deg,#fff,#f0f5ff);
+}
+
+.cell{
+    position:relative;
+    border-radius:10px;
+    background:rgba(255,255,255,.75);
+    border:1px solid rgba(0,0,0,.07);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:9px;
+    font-weight:700;
+}
+
+.task-cell{
+    background:#fff7fb;
+}
+
+.finish-cell{
+    background:#fff7d6;
+}
+
+.number{
+    position:absolute;
+    left:4px;
+    top:3px;
+    font-size:7px;
+    color:#8e8e93;
+}
+
+.piece{
+    position:absolute;
+    bottom:3px;
+    width:23px;
+    height:23px;
+    border-radius:50%;
+    border:2px solid white;
+    box-shadow:0 3px 9px rgba(0,0,0,.3);
+}
+
+.p1{
+    left:3px;
+}
+
+.p2{
+    right:3px;
+}
+
+.active-piece{
+    transform:scale(1.28);
+}
+
+.dice-area{
+    position:fixed;
+    bottom:12px;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(620px,calc(100% - 28px));
+    z-index:20;
+}
+
+.dice{
+    width:100%;
+    height:64px;
+    border-radius:21px;
+    color:white;
+    font-weight:800;
+    font-size:18px;
+    box-shadow:0 15px 30px rgba(0,0,0,.2);
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    backdrop-filter:blur(9px);
+    -webkit-backdrop-filter:blur(9px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+}
+
+.modal-box{
+    width:min(450px,100%);
+    padding:22px;
+}
+
+.modal h2{
+    margin-top:0;
+}
+
+.task-text{
+    font-size:20px;
+    line-height:1.55;
+    font-weight:750;
+    margin:18px 0;
+}
+
+.choice{
+    width:100%;
+    text-align:left;
+    padding:16px;
+    border-radius:16px;
+    background:rgba(118,118,128,.12);
+    font-weight:700;
+    margin-top:10px;
+}
+
+.toast{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#222;
+    color:white;
+    padding:11px 17px;
+    border-radius:18px;
+    opacity:0;
+    z-index:80;
+    transition:.2s;
+}
+
+.toast.show{
+    opacity:1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- 首页 -->
+<section id="home">
+
+<div class="hero glass">
+    <div class="logo">💗🎲</div>
+    <div class="title">情侣飞行棋</div>
+    <div class="subtitle">V2.0 · 两个人 · 一台手机</div>
+</div>
+
+<div class="card glass">
+
+    <div class="label">私人密码</div>
+
+    <input
+        id="password"
+        type="password"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="输入 6 位密码"
+    >
+
+    <div id="passwordError" class="error"></div>
+
+    <button class="primary" onclick="login()">
+        继续
+    </button>
+
+</div>
+
+</section>
+
+
+<!-- 玩家设置 -->
+<section id="setup" class="hidden">
+
+<div class="hero glass">
+    <div class="logo">👥</div>
+    <div class="title">玩家设置</div>
+    <div class="subtitle">名字 + 棋子颜色</div>
+</div>
+
+<div class="card glass">
+
+    <div class="label">玩家 1</div>
+    <input id="player1" placeholder="例如：小锐">
+
+    <div class="label">玩家 2</div>
+    <input id="player2" placeholder="例如：小可爱">
+
+    <div class="label">玩家 1 的颜色</div>
+    <div id="colors1" class="colors"></div>
+
+    <div class="label">玩家 2 的颜色</div>
+    <div id="colors2" class="colors"></div>
+
+    <div id="setupError" class="error"></div>
+
+    <button class="primary" onclick="confirmPlayers()">
+        下一步
+    </button>
+
+</div>
+
+</section>
+
+
+<!-- 确认 -->
+<section id="confirm" class="hidden">
+
+<div class="hero glass">
+    <div class="logo">✨</div>
+    <div class="title">准备好了</div>
+    <div class="subtitle">确认后开始游戏</div>
+</div>
+
+<div id="summary" class="card glass"></div>
+
+<button class="primary" onclick="startGame()">
+    开始游戏
+</button>
+
+</section>
+
+
+<!-- 游戏 -->
+<section id="game" class="hidden">
+
+<div class="game-top">
+
+<div>
+    <div id="turn" class="turn"></div>
+    <div id="players" class="subtitle"></div>
+</div>
+
+<div>
+    <div id="round" class="round"></div>
+    <button class="secondary pause" onclick="pauseGame()">
+        暂停
+    </button>
+</div>
+
+</div>
+
+<div class="board-box glass">
+    <div id="board" class="board"></div>
+</div>
+
+</section>
+
+</div>
+
+
+<!-- 骰子 -->
+<div id="diceArea" class="dice-area hidden">
+
+<button id="diceButton" class="dice" onclick="rollDice()">
+    🎲 掷骰子
+</button>
+
+</div>
+
+
+<!-- 弹窗 -->
+<div id="modal" class="modal hidden">
+
+<div id="modalBox" class="modal-box glass"></div>
+
+</div>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+
+const PASSWORD="230507";
+
+const COLORS=[
+"#0A84FF",
+"#FF375F",
+"#30D158",
+"#AF52DE",
+"#FF9F0A",
+"#64D2FF",
+"#FFD60A",
+"#FF6482"
+];
+
+const TASKS=[
+"一起说一句今天最开心的事。",
+"轮流说一个对方的小优点。",
+"给对方一个真诚的夸奖。",
+"一起决定下一次约会想去哪里。",
+"用三个词形容对方。",
+"一起做一个小小的约定。",
+"分享一个最近想完成的小目标。",
+"给对方取一个临时昵称。",
+"一起回忆一件印象最深的事情。",
+"说一件你想和对方一起完成的事。"
+];
+
+let selectedColors=[0,3];
+
+let game={
+    names:["",""],
+    colors:["",""],
+    position:[0,48],
+    turn:0,
+    round:1,
+    waiting:false,
+    immune:[0,0]
+};
+
+
+function page(id){
+
+    ["home","setup","confirm","game"].forEach(section=>{
+        document
+        .getElementById(section)
+        .classList.toggle("hidden",section!==id);
+    });
+
+}
+
+
+function login(){
+
+    const password=
+        document.getElementById("password").value;
+
+    if(password===PASSWORD){
+
+        page("setup");
+
+        renderColors();
+
+    }else{
+
+        document.getElementById("passwordError")
+        .textContent="密码不正确，请再试一次。";
+
+    }
+
+}
+
+
+function renderColors(){
+
+    for(let player=1;player<=2;player++){
+
+        const box=
+            document.getElementById("colors"+player);
+
+        box.innerHTML="";
+
+        COLORS.forEach((color,index)=>{
+
+            const button=document.createElement("button");
+
+            button.className=
+                "color "+
+                (selectedColors[player-1]===index
+                    ?"selected":"");
+
+            button.style.background=color;
+
+            button.onclick=()=>{
+                chooseColor(player-1,index);
+            };
+
+            box.appendChild(button);
+
+        });
+
+    }
+
+}
+
+
+function chooseColor(player,index){
+
+    if(index===selectedColors[1-player]){
+        return;
+    }
+
+    selectedColors[player]=index;
+
+    renderColors();
+
+}
+
+
+function confirmPlayers(){
+
+    const name1=
+        document.getElementById("player1").value.trim();
+
+    const name2=
+        document.getElementById("player2").value.trim();
+
+    if(!name1||!name2){
+
+        document.getElementById("setupError")
+        .textContent="请填写两位玩家的名字。";
+
+        return;
+    }
+
+    game.names=[name1,name2];
+
+    game.colors=[
+        COLORS[selectedColors[0]],
+        COLORS[selectedColors[1]]
+    ];
+
+    document.getElementById("summary").innerHTML=`
+
+        <div class="confirm">
+            <span>玩家 1</span>
+            <b>
+                <i class="dot"
+                   style="background:${game.colors[0]}"></i>
+                ${escapeHTML(name1)}
+            </b>
+        </div>
+
+        <div class="confirm">
+            <span>玩家 2</span>
+            <b>
+                <i class="dot"
+                   style="background:${game.colors[1]}"></i>
+                ${escapeHTML(name2)}
+            </b>
+        </div>
+
+        <div class="confirm">
+            <span>游戏模式</span>
+            <b>iOS · 情侣桌游</b>
+        </div>
+    `;
+
+    page("confirm");
+
+}
+
+
+function startGame(){
+
+    game.position=[0,48];
+    game.turn=0;
+    game.round=1;
+    game.waiting=false;
+    game.immune=[0,0];
+
+    page("game");
+
+    document
+        .getElementById("diceArea")
+        .classList.remove("hidden");
+
+    createBoard();
+
+    updateUI();
+
+}
+
+
+function createBoard(){
+
+    const board=
+        document.getElementById("board");
+
+    board.innerHTML="";
+
+    for(let i=0;i<49;i++){
+
+        const cell=document.createElement("div");
+
+        cell.className="cell";
+
+        if(i%5===0){
+            cell.classList.add("task-cell");
+        }
+
+        if(i===48){
+            cell.classList.add("finish-cell");
+        }
+
+        cell.dataset.position=i;
+
+        cell.innerHTML=`
+            <span class="number">${i+1}</span>
+            ${i===0?"✈️":""}
+            ${i===48?"🏁":""}
+        `;
+
+        board.appendChild(cell);
+
+    }
+
+    drawPieces();
+
+}
+
+
+function drawPieces(){
+
+    document
+        .querySelectorAll(".piece")
+        .forEach(piece=>piece.remove());
+
+    game.position.forEach((position,player)=>{
+
+        const cell=
+            document.querySelector(
+                '[data-position="'+position+'"]'
+            );
+
+        if(!cell)return;
+
+        const piece=
+            document.createElement("div");
+
+        piece.className=
+            "piece p"+(player+1);
+
+        if(game.turn===player){
+            piece.classList.add("active-piece");
+        }
+
+        piece.style.background=
+            game.colors[player];
+
+        cell.appendChild(piece);
+
+    });
+
+}
+
+
+function updateUI(){
+
+    const player=game.turn;
+
+    document.getElementById("turn").innerHTML=`
+
+        <i class="dot"
+           style="background:${game.colors[player]}"></i>
+
+        轮到 ${escapeHTML(game.names[player])}
+
+    `;
+
+    document.getElementById("players").textContent=
+        game.names[0]+" VS "+game.names[1];
+
+    document.getElementById("round").textContent=
+        "第 "+game.round+" 回合";
+
+    const dice=
+        document.getElementById("diceButton");
+
+    dice.style.background=
+        game.colors[player];
+
+    dice.textContent=
+        "🎲 "+game.names[player]+"，掷骰子";
+
+    drawPieces();
+
+}
+
+
+function rollDice(){
+
+    if(game.waiting){
+        return;
+    }
+
+    game.waiting=true;
+
+    const dice=
+        Math.floor(Math.random()*6)+1;
+
+    toast("🎲 "+dice+" 点");
+
+    let step=0;
+
+    const timer=setInterval(()=>{
+
+        if(step>=dice){
+
+            clearInterval(timer);
+
+            land();
+
+            return;
+        }
+
+        game.position[game.turn]++;
+
+        if(game.position[game.turn]>48){
+
+            game.position[game.turn]
+            =48-(game.position[game.turn]-48);
+
+        }
+
+        step++;
+
+        drawPieces();
+
+    },100);
+
+}
+
+
+function land(){
+
+    const player=game.turn;
+
+    const position=
+        game.position[player];
+
+    if(position===48){
+
+        showTask(true);
+
+        return;
+    }
+
+    if(game.position[0]===game.position[1]){
+
+        encounter();
+
+        return;
+    }
+
+    if((position+1)%11===0){
+
+        lucky();
+
+        return;
+    }
+
+    if((position+1)%5===0){
+
+        showTask(false);
+
+        return;
+    }
+
+    nextTurn();
+
+}
+
+
+function encounter(){
+
+    showModal(`
+
+        <h2>⚔️ 相遇</h2>
+
+        <div class="task-text">
+            两个棋子来到了同一格。
+            <br><br>
+            要不要发动攻击？
+        </div>
+
+        <button class="choice"
+                onclick="attack()">
+            ⚔️ 发动攻击
+        </button>
+
+        <button class="choice"
+                onclick="specialEffect()">
+            🎲 随机特殊效果
+        </button>
+
+        <button class="choice"
+                onclick="skipAttack()">
+            🕊️ 放弃攻击
+        </button>
+
+    `);
+
+}
+
+
+function attack(){
+
+    closeModal();
+
+    const effects=[
+        "对方后退 2 格",
+        "对方后退 3 格",
+        "你获得一次免任务",
+        "你立即再掷一次"
+    ];
+
+    applyEffect(
+        effects[Math.floor(Math.random()*effects.length)]
+    );
+
+}
+
+
+function specialEffect(){
+
+    closeModal();
+
+    const effects=[
+        "你前进 2 格",
+        "你获得一次免任务",
+        "对方后退 2 格",
+        "你立即再掷一次"
+    ];
+
+    applyEffect(
+        effects[Math.floor(Math.random()*effects.length)]
+    );
+
+}
+
+
+function applyEffect(effect){
+
+    const me=game.turn;
+
+    const opponent=1-me;
+
+    toast(effect);
+
+    if(effect==="对方后退 2 格"){
+
+        game.position[opponent]=
+            Math.max(0,game.position[opponent]-2);
+
+    }
+
+    else if(effect==="对方后退 3 格"){
+
+        game.position[opponent]=
+            Math.max(0,game.position[opponent]-3);
+
+    }
+
+    else if(effect==="你获得一次免任务"){
+
+        game.immune[me]++;
+
+    }
+
+    else if(effect==="你前进 2 格"){
+
+        game.waiting=false;
+
+        moveExtra(2);
+
+        return;
+
+    }
+
+    else if(effect==="你立即再掷一次"){
+
+        game.waiting=false;
+
+        setTimeout(rollDice,350);
+
+        return;
+
+    }
+
+    game.waiting=false;
+
+    drawPieces();
+
+    nextTurn();
+
+}
+
+
+function moveExtra(steps){
+
+    let count=0;
+
+    const timer=setInterval(()=>{
+
+        if(count>=steps){
+
+            clearInterval(timer);
+
+            land();
+
+            return;
+
+        }
+
+        game.position[game.turn]++;
+
+        if(game.position[game.turn]>48){
+
+            game.position[game.turn]
+            =48-(game.position[game.turn]-48);
+
+        }
+
+        count++;
+
+        drawPieces();
+
+    },100);
+
+}
+
+
+function skipAttack(){
+
+    closeModal();
+
+    game.immune[game.turn]++;
+
+    game.waiting=false;
+
+    toast("获得一次免任务");
+
+    nextTurn();
+
+}
+
+
+function lucky(){
+
+    showModal(`
+
+        <h2>🎁 幸运格</h2>
+
+        <div class="task-text">
+            请选择一张命运卡
+        </div>
+
+        <button class="choice"
+                onclick="luckyChoose(1)">
+            ❔ 前进 2 格
+        </button>
+
+        <button class="choice"
+                onclick="luckyChoose(2)">
+            ❔ 获得免任务
+        </button>
+
+        <button class="choice"
+                onclick="luckyChoose(3)">
+            ❔ 立即再掷一次
+        </button>
+
+    `);
+
+}
+
+
+function luckyChoose(choice){
+
+    closeModal();
+
+    if(choice===1){
+
+        game.waiting=false;
+
+        moveExtra(2);
+
+    }
+
+    else if(choice===2){
+
+        game.immune[game.turn]++;
+
+        game.waiting=false;
+
+        nextTurn();
+
+    }
+
+    else{
+
+        game.waiting=false;
+
+        rollDice();
+
+    }
+
+}
+
+
+function showTask(finalTask){
+
+    const player=game.turn;
+
+    const task=
+        TASKS[
+            (game.position[player]*7+player)
+            %TASKS.length
+        ];
+
+    let immuneButton="";
+
+    if(!finalTask && game.immune[player]>0){
+
+        immuneButton=`
+
+            <button class="secondary"
+                    onclick="useImmune()">
+
+                🛡️ 使用免任务
+                （剩余 ${game.immune[player]} 次）
+
+            </button>
+
+        `;
+
+    }
+
+    showModal(`
+
+        <h2>
+            ${finalTask?"🏆 最终任务":"🎯 任务"}
+        </h2>
+
+        <div class="subtitle">
+            ${escapeHTML(game.names[player])}
+        </div>
+
+        <div class="task-text">
+            ${task}
+        </div>
+
+        ${immuneButton}
+
+        <button class="primary"
+                onclick="completeTask(${finalTask})">
+
+            ${finalTask?"完成并获胜":"完成任务"}
+
+        </button>
+
+    `);
+
+}
+
+
+function useImmune(){
+
+    game.immune[game.turn]--;
+
+    closeModal();
+
+    game.waiting=false;
+
+    nextTurn();
+
+}
+
+
+function completeTask(finalTask){
+
+    closeModal();
+
+    if(finalTask){
+
+        document
+            .getElementById("diceArea")
+            .classList.add("hidden");
+
+        showModal(`
+
+            <h2>
+                🏆 ${escapeHTML(game.names[game.turn])}
+                获胜！
+            </h2>
+
+            <div class="task-text">
+                恭喜完成最终任务！
+            </div>
+
+            <button class="primary"
+                    onclick="location.reload()">
+
+                再来一局
+
+            </button>
+
+        `);
+
+        return;
+
+    }
+
+    game.waiting=false;
+
+    nextTurn();
+
+}
+
+
+function nextTurn(){
+
+    game.turn=
+        game.turn===0?1:0;
+
+    game.round++;
+
+    updateUI();
+
+    toast("轮到 "+game.names[game.turn]);
+
+}
+
+
+function pauseGame(){
+
+    showModal(`
+
+        <h2>⏸️ 游戏已暂停</h2>
+
+        <div class="subtitle">
+            当前游戏进度保留。
+        </div>
+
+        <button class="primary"
+                onclick="closeModal()">
+
+            继续游戏
+
+        </button>
+
+        <button class="secondary"
+                onclick="location.reload()">
+
+            重新开始
+
+        </button>
+
+    `);
+
+}
+
+
+function showModal(html){
+
+    document
+        .getElementById("modalBox")
+        .innerHTML=html;
+
+    document
+        .getElementById("modal")
+        .classList.remove("hidden");
+
+}
+
+
+function closeModal(){
+
+    document
+        .getElementById("modal")
+        .classList.add("hidden");
+
+}
+
+
+function toast(text){
+
+    const toast=
+        document.getElementById("toast");
+
+    toast.textContent=text;
+
+    toast.classList.add("show");
+
+    setTimeout(()=>{
+        toast.classList.remove("show");
+    },900);
+
+}
+
+
+function escapeHTML(text){
+
+    return text.replace(
+        /[&<>"']/g,
+        character=>({
+
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#39;"
+
+        })[character]
+    );
+
+}
+
+</script>
+
+</body>
+</html>
