@@ -1,8 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#f5f5f7">
 <title>情侣飞行棋 V2.0</title>
 
@@ -14,1797 +14,2096 @@
 
 body{
   margin:0;
-  background:linear-gradient(145deg,#f7f7fa,#eef5ff 55%,#fff0f5);
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;
-  color:#1d1d1f;
-}
-
-button,input{
-  font:inherit;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",
+  "Helvetica Neue",Arial,sans-serif;
+  background:#f5f5f7;
+  color:#1c1c1e;
+  min-height:100vh;
 }
 
 button{
   border:0;
+  font:inherit;
+  cursor:pointer;
 }
+
+.app{
+  width:min(720px,100%);
+  margin:auto;
+  padding:18px 14px 40px;
+}
+
+.header{
+  text-align:center;
+  padding:10px 0 16px;
+}
+
+.header h1{
+  margin:0;
+  font-size:28px;
+  letter-spacing:-1px;
+}
+
+.header p{
+  margin:6px 0 0;
+  color:#8e8e93;
+  font-size:13px;
+}
+
+.card{
+  background:rgba(255,255,255,.88);
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:24px;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+  padding:16px;
+  margin-bottom:14px;
+  backdrop-filter:blur(20px);
+}
+
+.players{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.player{
+  border-radius:18px;
+  padding:12px;
+  background:#f2f2f7;
+  text-align:center;
+  transition:.25s;
+}
+
+.player.active{
+  background:#e8f1ff;
+  box-shadow:0 0 0 2px #007aff inset;
+}
+
+.player-dot{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  display:inline-block;
+  vertical-align:middle;
+  margin-right:6px;
+}
+
+.board-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:1/1;
+  margin:auto;
+  background:
+    linear-gradient(135deg,#eef7ff,#fff1f7);
+  border-radius:28px;
+  padding:10px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    0 15px 35px rgba(0,0,0,.1);
+}
+
+.board{
+  width:100%;
+  height:100%;
+  position:relative;
+  border-radius:22px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 50%,#fff 0%,#f7f7fa 55%,#ededf2 100%);
+}
+
+.board::before{
+  content:"💕";
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  font-size:45px;
+  opacity:.22;
+}
+
+.cell{
+  position:absolute;
+  width:8%;
+  aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:#fff;
+  border:2px solid #d1d1d6;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  font-weight:700;
+  box-shadow:0 3px 8px rgba(0,0,0,.1);
+}
+
+.cell.task{
+  background:#fff2c7;
+  border-color:#ffcc00;
+}
+
+.cell.lucky{
+  background:#e8f8ec;
+  border-color:#34c759;
+}
+
+.cell.start{
+  background:#e5f0ff;
+  border-color:#007aff;
+}
+
+.cell.end{
+  background:#ffe5ed;
+  border-color:#ff375f;
+}
+
+.token{
+  position:absolute;
+  width:31px;
+  height:31px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  z-index:20;
+  border:3px solid white;
+  box-shadow:
+    0 4px 10px rgba(0,0,0,.25),
+    0 0 0 1px rgba(0,0,0,.1);
+  transition:
+    left .3s ease,
+    top .3s ease;
+}
+
+.token.boy{
+  background:#007aff;
+}
+
+.token.girl{
+  background:#ff375f;
+}
+
+.dice-area{
+  text-align:center;
+}
+
+.dice{
+  width:100px;
+  height:100px;
+  margin:4px auto 12px;
+  border-radius:24px;
+  background:linear-gradient(145deg,#fff,#e5e5ea);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:62px;
+  box-shadow:
+    0 10px 25px rgba(0,0,0,.15),
+    inset 0 1px 1px white;
+}
+
+.dice.rolling{
+  animation:dice .65s ease;
+}
+
+@keyframes dice{
+  0%{transform:rotate(0) scale(1)}
+  25%{transform:rotate(15deg) scale(1.08)}
+  50%{transform:rotate(-18deg) scale(1.08)}
+  75%{transform:rotate(10deg) scale(1.04)}
+  100%{transform:rotate(0) scale(1)}
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.primary{
+  background:#007aff;
+  color:#fff;
+}
+
+.secondary{
+  background:#e5e5ea;
+  color:#1c1c1e;
+}
+
+.danger{
+  background:#ff3b30;
+  color:#fff;
+}
+
+.success{
+  background:#34c759;
+  color:#fff;
+}
+
+button{
+  min-height:46px;
+  border-radius:14px;
+  padding:0 14px;
+  font-weight:700;
+}
+
+button:active{
+  transform:scale(.97);
+}
+
+.status{
+  text-align:center;
+  padding:12px;
+  background:#f2f2f7;
+  border-radius:14px;
+  margin-top:10px;
+  font-size:14px;
+}
+
+.task-box{
+  min-height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:15px;
+  background:#fff8e1;
+  border-radius:17px;
+  font-size:16px;
+  font-weight:650;
+}
+
+.log{
+  max-height:180px;
+  overflow:auto;
+  font-size:13px;
+}
+
+.log div{
+  padding:9px 0;
+  border-bottom:1px solid #eee;
+}
+
+.settings{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.input{
+  width:100%;
+  padding:12px;
+  border-radius:13px;
+  border:1px solid #d1d1d6;
+  font-size:16px;
+  outline:none;
+  background:#fff;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.38);
+  backdrop-filter:blur(12px);
+  z-index:100;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.overlay.show{
+  display:flex;
+}
+
+.modal{
+  width:min(430px,100%);
+  background:rgba(255,255,255,.97);
+  border-radius:28px;
+  padding:24px;
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+  animation:pop .22s ease;
+}
+
+@keyframes pop{
+  from{
+    opacity:0;
+    transform:scale(.9);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+.modal h2{
+  margin:0 0 10px;
+  font-size:24px;
+}
+
+.modal p{
+  line-height:1.6;
+  color:#3a3a3c;
+}
+
+.modal-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.modal-buttons.one{
+  grid-template-columns:1fr;
+}
+
+.setup{
+  position:fixed;
+  inset:0;
+  background:rgba(245,245,247,.98);
+  backdrop-filter:blur(20px);
+  z-index:200;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+.setup.hidden{
+  display:none;
+}
+
+.setup-card{
+  width:min(450px,100%);
+  background:white;
+  border-radius:30px;
+  padding:24px;
+  box-shadow:0 25px 80px rgba(0,0,0,.16);
+}
+
+.setup-card h1{
+  margin:0;
+  font-size:28px;
+}
+
+.setup-card p{
+  color:#8e8e93;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.field{
+  margin:15px 0;
+}
+
+.field label{
+  display:block;
+  margin-bottom:7px;
+  font-size:13px;
+  color:#636366;
+}
+
+.colors{
+  display:flex;
+  gap:12px;
+}
+
+.color{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:3px solid white;
+  box-shadow:0 0 0 1px #ccc;
+}
+
+.color.selected{
+  box-shadow:0 0 0 3px #1c1c1e;
+}
+
+.blue{background:#007aff}
+.red{background:#ff375f}
+.purple{background:#af52de}
+.orange{background:#ff9500}
+.green{background:#34c759}
 
 .hidden{
   display:none!important;
 }
 
-.app{
-  max-width:620px;
-  margin:auto;
-  padding:14px 14px 110px;
-}
+@media(max-width:480px){
+  .app{
+    padding:10px 10px 30px;
+  }
 
-.glass{
-  background:rgba(255,255,255,.86);
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,.9);
-  box-shadow:0 16px 42px rgba(0,0,0,.12);
-  border-radius:27px;
-}
+  .header h1{
+    font-size:24px;
+  }
 
-.hero{
-  text-align:center;
-  padding:28px 16px;
-  margin:8px 0 14px;
-}
+  .dice{
+    width:85px;
+    height:85px;
+    font-size:53px;
+  }
 
-.logo{
-  font-size:50px;
-}
-
-.title{
-  font-size:30px;
-  font-weight:800;
-}
-
-.sub{
-  font-size:14px;
-  color:#6e6e73;
-}
-
-.card{
-  padding:18px;
-  margin:14px 0;
-}
-
-.label{
-  font-size:13px;
-  color:#6e6e73;
-  margin:10px 0 7px;
-}
-
-input{
-  width:100%;
-  height:50px;
-  border:1px solid #ccc;
-  border-radius:15px;
-  padding:0 15px;
-  font-size:17px;
-  outline:none;
-  background:#fff;
-}
-
-input:focus{
-  border-color:#0a84ff;
-  box-shadow:0 0 0 3px rgba(10,132,255,.12);
-}
-
-.primary,
-.secondary{
-  width:100%;
-  height:52px;
-  border-radius:17px;
-  font-weight:700;
-  margin-top:12px;
-}
-
-.primary{
-  background:#0a84ff;
-  color:white;
-}
-
-.secondary{
-  background:#eee;
-  color:#1d1d1f;
-}
-
-.error{
-  color:#d70035;
-  font-size:13px;
-  margin-top:7px;
-}
-
-.colors{
-  display:flex;
-  gap:11px;
-  flex-wrap:wrap;
-}
-
-.sw{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  border:3px solid transparent;
-}
-
-.sw.sel{
-  border-color:white;
-  outline:3px solid #1d1d1f;
-}
-
-.confirm{
-  display:flex;
-  justify-content:space-between;
-  padding:13px 0;
-  border-bottom:1px solid #ddd;
-}
-
-.confirm:last-child{
-  border-bottom:0;
-}
-
-.dot{
-  display:inline-block;
-  width:19px;
-  height:19px;
-  border-radius:50%;
-  vertical-align:middle;
-  margin-right:7px;
-}
-
-.game-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:5px 0 10px;
-}
-
-.turn{
-  font-weight:800;
-  font-size:17px;
-}
-
-.round{
-  font-size:12px;
-  color:#6e6e73;
-  text-align:right;
-}
-
-.pause{
-  width:auto;
-  height:36px;
-  padding:0 13px;
-  margin-top:5px;
-}
-
-.board-wrap{
-  padding:9px;
-}
-
-.board{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:5px;
-  aspect-ratio:1;
-  padding:7px;
-  border-radius:24px;
-  background:linear-gradient(135deg,#fff,#eef4ff);
-}
-
-.cell{
-  position:relative;
-  border-radius:10px;
-  background:rgba(255,255,255,.75);
-  border:1px solid rgba(0,0,0,.08);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:9px;
-  font-weight:700;
-}
-
-.task{
-  background:#fff7fb;
-}
-
-.lucky{
-  background:#eefaff;
-}
-
-.finish{
-  background:#fff7d6;
-}
-
-.n{
-  position:absolute;
-  top:3px;
-  left:4px;
-  color:#8e8e93;
-  font-size:7px;
-}
-
-.piece{
-  position:absolute;
-  bottom:3px;
-  width:23px;
-  height:23px;
-  border-radius:50%;
-  border:2px solid white;
-  box-shadow:0 2px 8px rgba(0,0,0,.35);
-  z-index:3;
-}
-
-.p1{
-  left:3px;
-}
-
-.p2{
-  right:3px;
-}
-
-.active{
-  transform:scale(1.25);
-}
-
-.dice-area{
-  position:fixed;
-  left:50%;
-  bottom:12px;
-  transform:translateX(-50%);
-  width:min(620px,calc(100% - 28px));
-  z-index:10;
-}
-
-.dice{
-  width:100%;
-  height:64px;
-  border-radius:21px;
-  color:white;
-  font-size:18px;
-  font-weight:800;
-  box-shadow:0 15px 32px rgba(0,0,0,.2);
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.58);
-  backdrop-filter:blur(9px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:20;
-}
-
-.modalbox{
-  width:min(450px,100%);
-  padding:22px;
-}
-
-.modal h2{
-  margin-top:0;
-}
-
-.tasktext{
-  font-size:20px;
-  font-weight:750;
-  line-height:1.55;
-  margin:18px 0;
-}
-
-.choice{
-  width:100%;
-  padding:16px;
-  border-radius:16px;
-  background:#eee;
-  font-weight:700;
-  text-align:left;
-  margin-top:10px;
-}
-
-.toast{
-  position:fixed;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#222;
-  color:white;
-  padding:11px 17px;
-  border-radius:18px;
-  opacity:0;
-  z-index:30;
-  transition:.2s;
-}
-
-.toast.show{
-  opacity:1;
+  .token{
+    width:27px;
+    height:27px;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<div id="setup" class="setup">
+  <div class="setup-card">
+    <h1>💕 情侣飞行棋</h1>
+    <p>
+      V2.0<br>
+      在传统飞行棋基础上加入任务、幸运、相遇攻击和特殊效果。
+    </p>
+
+    <div class="field">
+      <label>玩家 1 名称</label>
+      <input id="name1" class="input" value="玩家 1">
+    </div>
+
+    <div class="field">
+      <label>玩家 1 棋子颜色</label>
+      <div class="colors">
+        <button class="color blue selected" data-player="1" data-color="#007aff"></button>
+        <button class="color purple" data-player="1" data-color="#af52de"></button>
+        <button class="color orange" data-player="1" data-color="#ff9500"></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>玩家 2 名称</label>
+      <input id="name2" class="input" value="玩家 2">
+    </div>
+
+    <div class="field">
+      <label>玩家 2 棋子颜色</label>
+      <div class="colors">
+        <button class="color red selected" data-player="2" data-color="#ff375f"></button>
+        <button class="color green" data-player="2" data-color="#34c759"></button>
+        <button class="color purple" data-player="2" data-color="#af52de"></button>
+      </div>
+    </div>
+
+    <button id="startBtn" class="primary" style="width:100%">
+      开始游戏
+    </button>
+  </div>
+</div>
+
+
+<div id="eventOverlay" class="overlay">
+  <div class="modal">
+    <h2 id="eventTitle">事件</h2>
+    <p id="eventText"></p>
+    <div id="eventButtons" class="modal-buttons one"></div>
+  </div>
+</div>
+
+
 <div class="app">
 
-<section id="home">
-
-  <div class="hero glass">
-    <div class="logo">💗🎲</div>
-    <div class="title">情侣飞行棋</div>
-    <div class="sub">V2.0 · 两个人 · 一台手机</div>
+  <div class="header">
+    <h1>💕 情侣飞行棋</h1>
+    <p>V2.0 · 一部手机，两个人一起玩</p>
   </div>
 
-  <div class="card glass">
 
-    <div class="label">私人密码</div>
+  <div class="card">
+    <div class="players">
 
-    <input
-      id="pwd"
-      type="password"
-      inputmode="numeric"
-      maxlength="6"
-      placeholder="输入 6 位密码"
-    >
+      <div id="player1Card" class="player active">
+        <span id="dot1" class="player-dot" style="background:#007aff"></span>
+        <strong id="displayName1">玩家 1</strong>
+        <div style="font-size:12px;color:#8e8e93;margin-top:5px">
+          第 <span id="pos1">0</span> 格
+        </div>
+      </div>
 
-    <div id="err" class="error"></div>
+      <div id="player2Card" class="player">
+        <span id="dot2" class="player-dot" style="background:#ff375f"></span>
+        <strong id="displayName2">玩家 2</strong>
+        <div style="font-size:12px;color:#8e8e93;margin-top:5px">
+          第 <span id="pos2">0</span> 格
+        </div>
+      </div>
 
-    <button class="primary" onclick="unlock()">
-      继续
-    </button>
-
-  </div>
-
-</section>
-
-
-<section id="setup" class="hidden">
-
-  <div class="hero glass">
-    <div class="logo">👥</div>
-    <div class="title">玩家设置</div>
-    <div class="sub">名字 + 棋子颜色</div>
-  </div>
-
-  <div class="card glass">
-
-    <div class="label">玩家 1</div>
-    <input id="n1" placeholder="例如：小锐">
-
-    <div class="label">玩家 2</div>
-    <input id="n2" placeholder="例如：小可爱">
-
-    <div class="label">玩家 1 颜色</div>
-    <div id="c1" class="colors"></div>
-
-    <div class="label">玩家 2 颜色</div>
-    <div id="c2" class="colors"></div>
-
-    <div id="e2" class="error"></div>
-
-    <button class="primary" onclick="confirmSetup()">
-      下一步
-    </button>
-
-  </div>
-
-</section>
-
-
-<section id="confirm" class="hidden">
-
-  <div class="hero glass">
-    <div class="logo">✨</div>
-    <div class="title">准备好了</div>
-  </div>
-
-  <div id="summary" class="card glass"></div>
-
-  <button class="primary" onclick="startGame()">
-    开始游戏
-  </button>
-
-</section>
-
-
-<section id="game" class="hidden">
-
-  <div class="game-top">
-
-    <div>
-      <div id="turn" class="turn"></div>
-      <div id="pair" class="sub"></div>
     </div>
 
-    <div>
-      <div id="round" class="round"></div>
+    <div id="status" class="status">
+      玩家 1 的回合
+    </div>
+  </div>
 
-      <button
-        class="secondary pause"
-        onclick="pauseGame()"
-      >
-        暂停
+
+  <div class="card">
+
+    <div class="board-wrap">
+      <div id="board" class="board">
+
+        <div id="token1" class="token boy"></div>
+        <div id="token2" class="token girl"></div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="card dice-area">
+
+    <h3>🎲 掷骰子</h3>
+
+    <div id="dice" class="dice">
+      ⚄
+    </div>
+
+    <div class="actions">
+
+      <button id="rollBtn" class="primary">
+        🎲 掷骰子
       </button>
+
+      <button id="specialBtn" class="secondary">
+        ✨ 特殊效果
+      </button>
+
     </div>
 
   </div>
 
-  <div class="board-wrap glass">
-    <div id="board" class="board"></div>
+
+  <div class="card">
+
+    <h3>🎯 当前任务</h3>
+
+    <div id="taskBox" class="task-box">
+      等待进入任务格……
+    </div>
+
   </div>
 
-</section>
+
+  <div class="card">
+
+    <h3>📜 游戏记录</h3>
+
+    <div id="log" class="log">
+      <div>游戏还没有开始。</div>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>⚙️ 游戏设置</h3>
+
+    <div class="settings">
+
+      <button id="saveBtn" class="secondary">
+        💾 保存
+      </button>
+
+      <button id="restartBtn" class="danger">
+        🔄 重新开始
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
-
-
-<div id="diceArea" class="dice-area hidden">
-
-  <button
-    id="dice"
-    class="dice"
-    onclick="rollDice()"
-  >
-    🎲 掷骰子
-  </button>
-
-</div>
-
-
-<div id="modal" class="modal hidden">
-
-  <div
-    id="mb"
-    class="modalbox glass"
-  ></div>
-
-</div>
-
-
-<div id="toast" class="toast"></div>
 
 
 <script>
 
-"use strict";
-
-
-/* =========================
-   基础设置
-========================= */
-
-const PASS = "230507";
-
-const COLORS = [
-  "#0A84FF",
-  "#FF375F",
-  "#30D158",
-  "#AF52DE",
-  "#FF9F0A",
-  "#64D2FF",
-  "#FFD60A",
-  "#FF6482"
-];
+const MAX_POS = 30;
 
 const TASKS = [
-  "一起说一句今天最开心的事。",
-  "轮流说一个对方的小优点。",
-  "给对方一个真诚的夸奖。",
-  "一起决定下一次约会想去哪里。",
-  "用三个词形容对方。",
-  "一起做一个小小的约定。",
-  "分享一个最近想完成的小目标。",
-  "给对方取一个临时昵称。",
-  "一起回忆一件印象最深的事情。",
-  "说一件你想和对方一起完成的事。"
+
+  "认真说出对方三个优点。",
+  "说出你们最近一次开心的回忆。",
+  "用三个词形容自己。",
+  "给对方一句真诚的鼓励。",
+  "说一个你最喜欢对方的小习惯。",
+  "快速说出三件你们一起做过的事情。",
+  "说一个你们以后想一起完成的计划。",
+  "用一句话描述你理想中的约会。",
+  "模仿对方说一句口头禅。",
+  "说出一个你平时不太好意思说的话。",
+  "回答对方临时提出的一个问题。",
+  "做一个搞笑表情并保持三秒。",
+  "说出你第一次注意到对方时的一个细节。",
+  "说一句你觉得最适合对方的话。",
+  "说一个你希望两个人以后一起尝试的事情。",
+  "快速说出对方的三个喜好。",
+  "讲一个最近发生的小趣事。",
+  "用一句话描述你眼中的对方。",
+  "说出一个你们共同喜欢的东西。",
+  "闭眼三秒，然后说出对方现在可能在想什么。"
+
 ];
 
 
-/* =========================
-   游戏状态
-========================= */
+const DICE = [
+  "⚀",
+  "⚁",
+  "⚂",
+  "⚃",
+  "⚄",
+  "⚅"
+];
 
-const state = {
 
-  names: ["", ""],
+const game = {
 
-  colors: ["", ""],
+  started:false,
 
-  /*
-    两名玩家都从自己的起点开始。
-    位置范围 0 ~ 48。
-  */
-  pos: [0, 0],
+  over:false,
 
-  turn: 0,
+  current:1,
 
-  round: 1,
+  players:{
+    1:{
+      name:"玩家 1",
+      pos:0,
+      color:"#007aff"
+    },
 
-  /*
-    rolling：
-    当前是否正在移动。
+    2:{
+      name:"玩家 2",
+      pos:0,
+      color:"#ff375f"
+    }
+  },
 
-    locked：
-    当前是否正在等待玩家处理任务/特殊事件。
+  taskCells:[],
+  luckyCells:[],
 
-    两个状态全部 false 时，
-    当前玩家才能正常掷骰子。
-  */
-  rolling: false,
+  extraRoll:false,
 
-  locked: false,
-
-  immune: [0, 0],
-
-  winner: -1
+  forcedAttack:false
 
 };
 
 
-let selected = [0, 3];
-
-let moveTimer = null;
+const $ = id => document.getElementById(id);
 
 
-/* =========================
-   工具
-========================= */
+function random(min,max){
 
-function $(id){
-  return document.getElementById(id);
-}
-
-
-function page(id){
-
-  ["home","setup","confirm","game"].forEach(x => {
-
-    $(x).classList.toggle(
-      "hidden",
-      x !== id
-    );
-
-  });
+  return Math.floor(
+    Math.random()*(max-min+1)
+  )+min;
 
 }
 
 
-function safe(text){
+function shuffle(array){
 
-  return String(text).replace(
-    /[&<>"']/g,
-    m => ({
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#39;"
-    }[m])
+  return array
+    .map(v=>({v,sort:Math.random()}))
+    .sort((a,b)=>a.sort-b.sort)
+    .map(x=>x.v);
+
+}
+
+
+function addLog(text){
+
+  const log = $("log");
+
+  const item = document.createElement("div");
+
+  item.textContent = text;
+
+  log.prepend(item);
+
+}
+
+
+function status(text){
+
+  $("status").textContent = text;
+
+}
+
+
+function updatePlayers(){
+
+  $("displayName1").textContent =
+    game.players[1].name;
+
+  $("displayName2").textContent =
+    game.players[2].name;
+
+  $("pos1").textContent =
+    game.players[1].pos;
+
+  $("pos2").textContent =
+    game.players[2].pos;
+
+  $("dot1").style.background =
+    game.players[1].color;
+
+  $("dot2").style.background =
+    game.players[2].color;
+
+  $("player1Card").classList.toggle(
+    "active",
+    game.current===1
   );
 
-}
-
-
-/* =========================
-   密码
-========================= */
-
-function unlock(){
-
-  if($("pwd").value === PASS){
-
-    $("err").textContent = "";
-
-    page("setup");
-
-    renderColors();
-
-  }else{
-
-    $("err").textContent =
-      "密码不正确，请再试一次。";
-
-  }
-
-}
-
-
-/* =========================
-   颜色选择
-========================= */
-
-function renderColors(){
-
-  [1,2].forEach(k => {
-
-    const box =
-      $(k === 1 ? "c1" : "c2");
-
-    box.innerHTML = "";
-
-    COLORS.forEach((color,i) => {
-
-      const b =
-        document.createElement("button");
-
-      b.className =
-        "sw " +
-        (selected[k-1] === i
-          ? "sel"
-          : "");
-
-      b.style.background = color;
-
-      b.onclick = () => {
-
-        if(
-          i !==
-          selected[1-(k-1)]
-        ){
-
-          selected[k-1] = i;
-
-          renderColors();
-
-        }
-
-      };
-
-      box.appendChild(b);
-
-    });
-
-  });
-
-}
-
-
-/* =========================
-   玩家确认
-========================= */
-
-function confirmSetup(){
-
-  const a =
-    $("n1").value.trim();
-
-  const b =
-    $("n2").value.trim();
-
-  if(!a || !b){
-
-    $("e2").textContent =
-      "请填写两位玩家名字。";
-
-    return;
-
-  }
-
-  state.names = [a,b];
-
-  state.colors = [
-    COLORS[selected[0]],
-    COLORS[selected[1]]
-  ];
-
-  $("summary").innerHTML = `
-
-    <div class="confirm">
-
-      <span>玩家 1</span>
-
-      <b>
-        <i
-          class="dot"
-          style="background:${state.colors[0]}"
-        ></i>
-
-        ${safe(a)}
-      </b>
-
-    </div>
-
-
-    <div class="confirm">
-
-      <span>玩家 2</span>
-
-      <b>
-        <i
-          class="dot"
-          style="background:${state.colors[1]}"
-        ></i>
-
-        ${safe(b)}
-      </b>
-
-    </div>
-
-  `;
-
-  page("confirm");
-
-}
-
-
-/* =========================
-   开始游戏
-========================= */
-
-function startGame(){
-
-  state.pos = [0,0];
-
-  state.turn = 0;
-
-  state.round = 1;
-
-  state.rolling = false;
-
-  state.locked = false;
-
-  state.immune = [0,0];
-
-  state.winner = -1;
-
-  page("game");
-
-  $("diceArea").classList.remove(
-    "hidden"
+  $("player2Card").classList.toggle(
+    "active",
+    game.current===2
   );
 
-  buildBoard();
+  $("token1").style.background =
+    game.players[1].color;
 
-  updateUI();
+  $("token2").style.background =
+    game.players[2].color;
 
 }
 
 
-/* =========================
-   棋盘
-========================= */
-
-function buildBoard(){
+function createBoard(){
 
   const board = $("board");
 
-  board.innerHTML = "";
+  board.querySelectorAll(".cell").forEach(
+    x=>x.remove()
+  );
 
-  for(let i=0;i<49;i++){
+
+  const cells = [];
+
+
+  for(let i=0;i<=MAX_POS;i++){
+
+    let x;
+    let y;
+
+
+    if(i<=10){
+
+      x = 8 + i*8.4;
+      y = 88;
+
+    }
+
+    else if(i<=20){
+
+      x = 92;
+      y = 88-(i-10)*7.5;
+
+    }
+
+    else{
+
+      x = 92-(i-20)*8.4;
+      y = 13;
+
+    }
+
+
+    cells.push({x,y});
+
 
     const cell =
       document.createElement("div");
 
     cell.className = "cell";
 
-    /*
-      每 5 格一个任务格
-    */
+    if(i===0){
 
-    if(
-      i > 0 &&
-      i < 48 &&
-      i % 5 === 0
-    ){
+      cell.classList.add("start");
+      cell.textContent = "起点";
 
-      cell.classList.add("task");
+    }
+    else if(i===MAX_POS){
+
+      cell.classList.add("end");
+      cell.textContent = "🏆";
+
+    }
+    else{
+
+      cell.textContent = i;
 
     }
 
-    /*
-      幸运格
-    */
 
-    if(
-      i > 0 &&
-      i < 48 &&
-      (i+1) % 11 === 0
-    ){
-
-      cell.classList.add("lucky");
-
-    }
-
-    if(i === 48){
-
-      cell.classList.add("finish");
-
-    }
+    cell.style.left = x+"%";
+    cell.style.top = y+"%";
 
     cell.dataset.pos = i;
-
-    cell.innerHTML = `
-
-      <span class="n">
-        ${i+1}
-      </span>
-
-      ${
-        i === 0
-          ? "✈️"
-          : i === 48
-            ? "🏁"
-            : ""
-      }
-
-    `;
 
     board.appendChild(cell);
 
   }
 
-  drawPieces();
+
+  game.boardCells = cells;
+
+  markSpecialCells();
+
+  updateTokens();
 
 }
 
 
-/* =========================
-   棋子
-========================= */
-
-function drawPieces(){
+function markSpecialCells(){
 
   document
-    .querySelectorAll(".piece")
-    .forEach(x => x.remove());
+    .querySelectorAll(".cell")
+    .forEach(cell=>{
 
+      const p =
+        Number(cell.dataset.pos);
 
-  state.pos.forEach((pos,i) => {
-
-    const cell =
-      document.querySelector(
-        `[data-pos="${pos}"]`
+      cell.classList.remove(
+        "task",
+        "lucky"
       );
 
-    if(!cell) return;
+
+      if(game.taskCells.includes(p)){
+
+        cell.classList.add("task");
+
+        cell.textContent = "🎯";
+
+      }
+
+      else if(game.luckyCells.includes(p)){
+
+        cell.classList.add("lucky");
+
+        cell.textContent = "🍀";
+
+      }
+
+    });
+
+}
 
 
-    const piece =
-      document.createElement("div");
+function updateTokens(){
 
-    piece.className =
-      "piece p" +
-      (i+1) +
-      (state.turn === i
-        ? " active"
-        : "");
+  if(!game.boardCells) return;
 
-    piece.style.background =
-      state.colors[i];
 
-    cell.appendChild(piece);
+  [1,2].forEach(player=>{
+
+    const pos =
+      game.players[player].pos;
+
+    const point =
+      game.boardCells[
+        Math.min(pos,MAX_POS)
+      ];
+
+
+    const token =
+      $("token"+player);
+
+
+    token.style.left =
+      point.x+"%";
+
+    token.style.top =
+      point.y+"%";
 
   });
 
-}
 
-
-/* =========================
-   UI 更新
-========================= */
-
-function updateUI(){
-
-  const i = state.turn;
-
-  $("turn").innerHTML = `
-
-    <i
-      class="dot"
-      style="background:${state.colors[i]}"
-    ></i>
-
-    轮到 ${safe(state.names[i])}
-
-  `;
-
-  $("pair").textContent =
-    state.names[0] +
-    " VS " +
-    state.names[1];
-
-  $("round").textContent =
-    "第 " +
-    state.round +
-    " 回合";
-
-
-  $("dice").style.background =
-    state.colors[i];
-
-
-  if(state.rolling){
-
-    $("dice").textContent =
-      "🎲 正在移动…";
-
-  }else if(state.locked){
-
-    $("dice").textContent =
-      "⏳ 请处理当前事件";
-
-  }else{
-
-    $("dice").textContent =
-      "🎲 " +
-      state.names[i] +
-      "，掷骰子";
-
-  }
-
-
-  /*
-    关键：
-    每次状态变化后都重新画棋子。
-  */
-
-  drawPieces();
+  updatePlayers();
 
 }
 
 
-/* =========================
-   掷骰子
-========================= */
+function generateSpecialCells(){
 
-function rollDice(){
+  const available=[];
 
-  /*
-    这是本次修复最重要的判断。
 
-    只要：
-    rolling = false
-    locked = false
-
-    就可以再次掷骰子。
-  */
-
-  if(
-    state.rolling ||
-    state.locked ||
-    state.winner !== -1
+  for(
+    let i=2;
+    i<MAX_POS;
+    i++
   ){
 
-    return;
+    available.push(i);
 
   }
 
 
-  state.rolling = true;
+  const shuffled =
+    shuffle(available);
 
-  updateUI();
+
+  const taskCount =
+    random(4,8);
 
 
-  const dice =
-    1 + Math.floor(
-      Math.random() * 6
+  game.taskCells =
+    shuffled.slice(
+      0,
+      taskCount
     );
 
 
-  toast("🎲 " + dice + " 点");
-
-
-  let step = 0;
-
-
-  moveTimer =
-    setInterval(() => {
-
-      /*
-        移动完成
-      */
-
-      if(step >= dice){
-
-        clearInterval(moveTimer);
-
-        moveTimer = null;
-
-        resolveLanding();
-
-        return;
-
-      }
-
-
-      moveOneStep();
-
-      step++;
-
-    },120);
-
-}
-
-
-/* =========================
-   移动一步
-========================= */
-
-function moveOneStep(){
-
-  const i = state.turn;
-
-  /*
-    到达终点后不再继续。
-  */
-
-  if(state.pos[i] >= 48){
-
-    return;
-
-  }
-
-
-  state.pos[i]++;
-
-  drawPieces();
-
-}
-
-
-/* =========================
-   判断落点
-========================= */
-
-function resolveLanding(){
-
-  const i = state.turn;
-
-  const pos = state.pos[i];
-
-
-  /*
-    到达终点
-  */
-
-  if(pos >= 48){
-
-    showTask(true);
-
-    return;
-
-  }
-
-
-  /*
-    两人相遇
-  */
-
-  if(
-    state.pos[0] ===
-    state.pos[1]
-  ){
-
-    showEncounter();
-
-    return;
-
-  }
-
-
-  /*
-    幸运格
-  */
-
-  if(
-    (pos+1) % 11 === 0
-  ){
-
-    showLucky();
-
-    return;
-
-  }
-
-
-  /*
-    任务格
-  */
-
-  if(
-    pos > 0 &&
-    pos % 5 === 0
-  ){
-
-    showTask(false);
-
-    return;
-
-  }
-
-
-  /*
-    普通格
-  */
-
-  finishTurn();
-
-}
-
-
-/* =========================
-   完成当前回合
-========================= */
-
-function finishTurn(){
-
-  /*
-    非常重要：
-
-    无论之前发生了什么，
-    到这里都必须解除 rolling / locked。
-  */
-
-  state.rolling = false;
-
-  state.locked = false;
-
-
-  /*
-    换玩家
-  */
-
-  state.turn =
-    state.turn === 0
-      ? 1
-      : 0;
-
-
-  state.round++;
-
-
-  updateUI();
-
-
-  toast(
-    "轮到 " +
-    state.names[state.turn]
-  );
-
-}
-
-
-/* =========================
-   相遇
-========================= */
-
-function showEncounter(){
-
-  state.locked = true;
-
-  updateUI();
-
-
-  showModal(`
-
-    <h2>⚔️ 相遇</h2>
-
-    <div class="tasktext">
-      两个棋子来到了同一格。<br>
-      要不要发动攻击？
-    </div>
-
-    <button
-      class="choice"
-      onclick="attack()"
-    >
-      ⚔️ 发动攻击
-    </button>
-
-    <button
-      class="choice"
-      onclick="special()"
-    >
-      🎲 随机特殊效果
-    </button>
-
-    <button
-      class="choice"
-      onclick="skipAttack()"
-    >
-      🕊️ 放弃攻击
-    </button>
-
-  `);
-
-}
-
-
-/* =========================
-   攻击
-========================= */
-
-function attack(){
-
-  closeModal();
-
-
-  const effects = [
-
-    "对方后退 2 格",
-
-    "对方后退 3 格",
-
-    "你获得一次免任务",
-
-    "你立即再掷一次"
-
-  ];
-
-
-  const effect =
-    effects[
-      Math.floor(
-        Math.random() *
-        effects.length
-      )
-    ];
-
-
-  applyEffect(effect);
-
-}
-
-
-/* =========================
-   特殊效果
-========================= */
-
-function special(){
-
-  closeModal();
-
-
-  const effects = [
-
-    "你前进 2 格",
-
-    "你获得一次免任务",
-
-    "对方后退 2 格",
-
-    "你立即再掷一次"
-
-  ];
-
-
-  const effect =
-    effects[
-      Math.floor(
-        Math.random() *
-        effects.length
-      )
-    ];
-
-
-  applyEffect(effect);
-
-}
-
-
-/* =========================
-   应用特殊效果
-========================= */
-
-function applyEffect(effect){
-
-  const me = state.turn;
-
-  const opponent =
-    me === 0 ? 1 : 0;
-
-
-  toast(effect);
-
-
-  if(
-    effect === "对方后退 2 格"
-  ){
-
-    state.pos[opponent] =
-      Math.max(
-        0,
-        state.pos[opponent] - 2
-      );
-
-    finishTurn();
-
-    return;
-
-  }
-
-
-  if(
-    effect === "对方后退 3 格"
-  ){
-
-    state.pos[opponent] =
-      Math.max(
-        0,
-        state.pos[opponent] - 3
-      );
-
-    finishTurn();
-
-    return;
-
-  }
-
-
-  if(
-    effect === "你获得一次免任务"
-  ){
-
-    state.immune[me]++;
-
-    finishTurn();
-
-    return;
-
-  }
-
-
-  if(
-    effect === "你前进 2 格"
-  ){
-
-    state.locked = false;
-
-    state.rolling = true;
-
-    updateUI();
-
-    moveExtraSteps(2);
-
-    return;
-
-  }
-
-
-  if(
-    effect === "你立即再掷一次"
-  ){
-
-    /*
-      不换玩家。
-
-      只把 rolling / locked 清掉，
-      当前玩家马上重新获得骰子。
-    */
-
-    state.rolling = false;
-
-    state.locked = false;
-
-    updateUI();
-
-    setTimeout(
-      rollDice,
-      350
+  game.luckyCells =
+    shuffled.slice(
+      taskCount,
+      taskCount+5
     );
 
-    return;
 
-  }
-
-
-  finishTurn();
+  markSpecialCells();
 
 }
 
 
-/* =========================
-   额外移动
-========================= */
+function showSetup(){
 
-function moveExtraSteps(count){
-
-  let step = 0;
-
-
-  const timer =
-    setInterval(() => {
-
-      if(step >= count){
-
-        clearInterval(timer);
-
-        state.rolling = false;
-
-        /*
-          额外移动完成以后，
-          必须重新判断落点。
-        */
-
-        resolveLanding();
-
-        return;
-
-      }
-
-
-      moveOneStep();
-
-      step++;
-
-    },120);
-
-}
-
-
-/* =========================
-   放弃攻击
-========================= */
-
-function skipAttack(){
-
-  closeModal();
-
-  state.immune[state.turn]++;
-
-  toast("获得一次免任务");
-
-  finishTurn();
-
-}
-
-
-/* =========================
-   幸运格
-========================= */
-
-function showLucky(){
-
-  state.locked = true;
-
-  updateUI();
-
-
-  showModal(`
-
-    <h2>🎁 幸运格</h2>
-
-    <div class="tasktext">
-      请选择一个命运效果
-    </div>
-
-    <button
-      class="choice"
-      onclick="lucky(1)"
-    >
-      🚀 前进 2 格
-    </button>
-
-    <button
-      class="choice"
-      onclick="lucky(2)"
-    >
-      🛡️ 获得免任务
-    </button>
-
-    <button
-      class="choice"
-      onclick="lucky(3)"
-    >
-      🎲 立即再掷一次
-    </button>
-
-  `);
-
-}
-
-
-/* =========================
-   幸运效果
-========================= */
-
-function lucky(type){
-
-  closeModal();
-
-
-  if(type === 1){
-
-    state.locked = false;
-
-    state.rolling = true;
-
-    updateUI();
-
-    moveExtraSteps(2);
-
-    return;
-
-  }
-
-
-  if(type === 2){
-
-    state.immune[state.turn]++;
-
-    finishTurn();
-
-    return;
-
-  }
-
-
-  if(type === 3){
-
-    state.rolling = false;
-
-    state.locked = false;
-
-    updateUI();
-
-    setTimeout(
-      rollDice,
-      350
-    );
-
-    return;
-
-  }
-
-}
-
-
-/* =========================
-   任务
-========================= */
-
-function showTask(finalTask){
-
-  state.locked = true;
-
-  updateUI();
-
-
-  const i = state.turn;
-
-
-  const text =
-    TASKS[
-      (state.pos[i] * 7 + i) %
-      TASKS.length
-    ];
-
-
-  let immuneButton = "";
-
-
-  if(
-    !finalTask &&
-    state.immune[i] > 0
-  ){
-
-    immuneButton = `
-
-      <button
-        class="secondary"
-        onclick="useImmune()"
-      >
-        🛡️ 使用免任务
-        （剩余 ${state.immune[i]} 次）
-      </button>
-
-    `;
-
-  }
-
-
-  showModal(`
-
-    <h2>
-      ${finalTask
-        ? "🏆 最终任务"
-        : "🎯 任务"}
-    </h2>
-
-    <div class="sub">
-      ${safe(state.names[i])}
-    </div>
-
-    <div class="tasktext">
-      ${text}
-    </div>
-
-    ${immuneButton}
-
-    <button
-      class="primary"
-      onclick="completeTask(${finalTask})"
-    >
-      ${
-        finalTask
-          ? "完成并获胜"
-          : "完成任务"
-      }
-    </button>
-
-  `);
-
-}
-
-
-/* =========================
-   使用免任务
-========================= */
-
-function useImmune(){
-
-  state.immune[state.turn]--;
-
-  closeModal();
-
-  finishTurn();
-
-}
-
-
-/* =========================
-   完成任务
-========================= */
-
-function completeTask(finalTask){
-
-  closeModal();
-
-
-  /*
-    普通任务
-  */
-
-  if(!finalTask){
-
-    finishTurn();
-
-    return;
-
-  }
-
-
-  /*
-    最终任务完成
-  */
-
-  state.winner =
-    state.turn;
-
-  state.rolling = false;
-
-  state.locked = true;
-
-  $("diceArea").classList.add(
-    "hidden"
-  );
-
-
-  showModal(`
-
-    <h2>
-      🏆 ${safe(
-        state.names[state.turn]
-      )} 获胜！
-    </h2>
-
-    <div class="tasktext">
-      恭喜完成最终任务！
-    </div>
-
-    <button
-      class="primary"
-      onclick="location.reload()"
-    >
-      再来一局
-    </button>
-
-  `);
-
-}
-
-
-/* =========================
-   暂停
-========================= */
-
-function pauseGame(){
-
-  if(
-    state.rolling ||
-    state.locked
-  ){
-
-    return;
-
-  }
-
-
-  state.locked = true;
-
-  showModal(`
-
-    <h2>⏸️ 游戏已暂停</h2>
-
-    <div class="tasktext">
-      当前进度已经保留。
-    </div>
-
-    <button
-      class="primary"
-      onclick="resumeGame()"
-    >
-      继续游戏
-    </button>
-
-    <button
-      class="secondary"
-      onclick="location.reload()"
-    >
-      重新开始
-    </button>
-
-  `);
-
-}
-
-
-function resumeGame(){
-
-  closeModal();
-
-  state.locked = false;
-
-  updateUI();
-
-}
-
-
-/* =========================
-   弹窗
-========================= */
-
-function showModal(html){
-
-  $("mb").innerHTML = html;
-
-  $("modal")
+  $("setup")
     .classList
     .remove("hidden");
 
 }
 
 
-function closeModal(){
+function hideSetup(){
 
-  $("modal")
+  $("setup")
     .classList
     .add("hidden");
 
 }
 
 
-/* =========================
-   提示
-========================= */
+document
+  .querySelectorAll(".color")
+  .forEach(button=>{
 
-function toast(text){
+    button.addEventListener(
+      "click",
+      ()=>{
 
-  const t = $("toast");
+        const player =
+          button.dataset.player;
 
-  t.textContent = text;
+        const color =
+          button.dataset.color;
 
-  t.classList.add("show");
 
-  setTimeout(() => {
+        document
+          .querySelectorAll(
+            `.color[data-player="${player}"]`
+          )
+          .forEach(
+            b=>b.classList.remove("selected")
+          );
 
-    t.classList.remove("show");
 
-  },850);
+        button.classList.add("selected");
+
+        game.players[player].color =
+          color;
+
+      }
+    );
+
+  });
+
+
+$("startBtn").addEventListener(
+  "click",
+  startGame
+);
+
+
+function startGame(){
+
+  game.players[1].name =
+    $("name1").value.trim() ||
+    "玩家 1";
+
+  game.players[2].name =
+    $("name2").value.trim() ||
+    "玩家 2";
+
+
+  game.players[1].pos=0;
+  game.players[2].pos=0;
+
+  game.current=1;
+
+  game.over=false;
+
+  game.extraRoll=false;
+
+  game.forcedAttack=false;
+
+  game.started=true;
+
+
+  generateSpecialCells();
+
+  createBoard();
+
+  updateTokens();
+
+  $("taskBox").textContent =
+    "等待进入任务格……";
+
+
+  $("log").innerHTML =
+    "<div>🎮 新游戏开始。</div>";
+
+
+  addLog(
+    `${game.players[1].name}先开始。`
+  );
+
+
+  hideSetup();
+
+  status(
+    `${game.players[1].name} 的回合`
+  );
+
+
+  saveGame();
+
+}
+
+
+function showModal(
+  title,
+  text,
+  buttons
+){
+
+  $("eventTitle").textContent =
+    title;
+
+  $("eventText").textContent =
+    text;
+
+
+  const box =
+    $("eventButtons");
+
+  box.innerHTML="";
+
+
+  buttons.forEach(button=>{
+
+    const b =
+      document.createElement("button");
+
+    b.textContent =
+      button.text;
+
+    b.className =
+      button.className ||
+      "secondary";
+
+
+    b.addEventListener(
+      "click",
+      ()=>{
+
+        closeModal();
+
+        button.action();
+
+      }
+    );
+
+
+    box.appendChild(b);
+
+  });
+
+
+  $("eventOverlay")
+    .classList
+    .add("show");
+
+}
+
+
+function closeModal(){
+
+  $("eventOverlay")
+    .classList
+    .remove("show");
+
+}
+
+
+function rollDice(){
+
+  if(!game.started) return;
+
+  if(game.over) return;
+
+
+  const player =
+    game.current;
+
+
+  const dice =
+    $("dice");
+
+
+  const roll =
+    random(1,6);
+
+
+  dice.classList.remove(
+    "rolling"
+  );
+
+
+  void dice.offsetWidth;
+
+
+  dice.classList.add(
+    "rolling"
+  );
+
+
+  dice.textContent =
+    DICE[roll-1];
+
+
+  status(
+    `${game.players[player].name} 掷出了 ${roll}`
+  );
+
+
+  addLog(
+    `${game.players[player].name} 掷出了 ${roll} 点。`
+  );
+
+
+  setTimeout(
+    ()=>movePlayer(
+      player,
+      roll
+    ),
+    650
+  );
+
+}
+
+
+function movePlayer(
+  player,
+  steps
+){
+
+  if(game.over) return;
+
+
+  const p =
+    game.players[player];
+
+
+  const start =
+    p.pos;
+
+
+  const target =
+    Math.min(
+      MAX_POS,
+      start+steps
+    );
+
+
+  let current =
+    start;
+
+
+  const timer =
+    setInterval(()=>{
+
+      current++;
+
+      p.pos =
+        current;
+
+      updateTokens();
+
+
+      if(current>=target){
+
+        clearInterval(timer);
+
+        finishMovement(player);
+
+      }
+
+    },220);
+
+}
+
+
+function finishMovement(player){
+
+  const p =
+    game.players[player];
+
+
+  if(p.pos>=MAX_POS){
+
+    win(player);
+
+    return;
+
+  }
+
+
+  const other =
+    player===1 ? 2 : 1;
+
+
+  if(
+    game.players[other].pos===
+    p.pos
+  ){
+
+    encounter(
+      player,
+      other
+    );
+
+    return;
+
+  }
+
+
+  if(
+    game.taskCells.includes(
+      p.pos
+    )
+  ){
+
+    taskEvent(player);
+
+    return;
+
+  }
+
+
+  if(
+    game.luckyCells.includes(
+      p.pos
+    )
+  ){
+
+    luckyEvent(player);
+
+    return;
+
+  }
+
+
+  nextTurn();
+
+}
+
+
+function taskEvent(player){
+
+  const task =
+    TASKS[
+      random(
+        0,
+        TASKS.length-1
+      )
+    ];
+
+
+  $("taskBox").textContent =
+    task;
+
+
+  showModal(
+    "🎯 当前任务",
+    task,
+    [
+
+      {
+        text:"✅ 完成任务",
+        className:"success",
+        action:()=>{
+
+          addLog(
+            `${game.players[player].name} 完成了任务。`
+          );
+
+
+          showModal(
+            "✨ 任务完成",
+            "不错！继续前进。",
+            [
+              {
+                text:"继续",
+                className:"success",
+                action:nextTurn
+              }
+            ]
+          );
+
+        }
+      },
+
+
+      {
+        text:"❌ 我失败了",
+        className:"danger",
+        action:()=>{
+
+          const penalty =
+            random(1,3);
+
+
+          game.players[player].pos =
+            Math.max(
+              0,
+              game.players[player].pos-
+              penalty
+            );
+
+
+          updateTokens();
+
+
+          addLog(
+            `${game.players[player].name} 任务失败，后退 ${penalty} 格。`
+          );
+
+
+          showModal(
+            "⚠️ 任务失败",
+            `随机惩罚：后退 ${penalty} 格。`,
+            [
+              {
+                text:"接受惩罚",
+                className:"danger",
+                action:()=>{
+
+                  if(
+                    game.taskCells.includes(
+                      game.players[player].pos
+                    )
+                  ){
+
+                    $("taskBox").textContent =
+                      "你后退到了任务格。";
+
+                  }
+
+
+                  nextTurn();
+
+                }
+              }
+            ]
+          );
+
+        }
+      }
+
+    ]
+
+  );
+
+}
+
+
+function luckyEvent(player){
+
+  const good =
+    Math.random()<0.62;
+
+
+  if(good){
+
+    const type =
+      random(1,4);
+
+
+    let text="";
+
+
+    if(type===1){
+
+      text="前进 2 格";
+
+    }
+
+    if(type===2){
+
+      text="获得一次额外掷骰";
+
+    }
+
+    if(type===3){
+
+      text="下一次任务自动完成";
+
+    }
+
+    if(type===4){
+
+      text="获得一次攻击强化";
+
+    }
+
+
+    addLog(
+      `${game.players[player].name} 触发幸运：${text}`
+    );
+
+
+    showModal(
+      "🍀 幸运事件",
+      text,
+      [
+        {
+          text:"太棒了",
+          className:"success",
+          action:()=>{
+
+            if(type===1){
+
+              game.players[player].pos =
+                Math.min(
+                  MAX_POS,
+                  game.players[player].pos+2
+                );
+
+              updateTokens();
+
+            }
+
+
+            if(type===2){
+
+              game.extraRoll=true;
+
+            }
+
+
+            nextTurn();
+
+          }
+        }
+      ]
+    );
+
+  }
+  else{
+
+    const type =
+      random(1,3);
+
+
+    let text="";
+
+
+    if(type===1){
+
+      text="后退 1 格";
+
+    }
+
+    if(type===2){
+
+      text="下一回合不能主动攻击";
+
+    }
+
+    if(type===3){
+
+      text="下一次任务不能选择失败";
+
+    }
+
+
+    addLog(
+      `${game.players[player].name} 触发意外：${text}`
+    );
+
+
+    showModal(
+      "⚠️ 意外效果",
+      text,
+      [
+        {
+          text:"知道了",
+          className:"danger",
+          action:()=>{
+
+            if(type===1){
+
+              game.players[player].pos =
+                Math.max(
+                  0,
+                  game.players[player].pos-1
+                );
+
+              updateTokens();
+
+            }
+
+
+            nextTurn();
+
+          }
+        }
+      ]
+    );
+
+  }
+
+}
+
+
+function encounter(
+  player,
+  other
+){
+
+  const name =
+    game.players[player].name;
+
+  const otherName =
+    game.players[other].name;
+
+
+  showModal(
+    "⚔️ 相遇！",
+    `${name} 遇到了 ${otherName}。`,
+    [
+
+      {
+        text:"⚔️ 发动攻击",
+        className:"danger",
+        action:()=>attack(
+          player,
+          other
+        )
+      },
+
+
+      {
+        text:"🎲 随机特殊效果",
+        className:"success",
+        action:()=>specialEffect(
+          player,
+          other
+        )
+      },
+
+
+      {
+        text:"🕊️ 不攻击",
+        className:"secondary",
+        action:()=>{
+
+          addLog(
+            `${name} 选择不攻击。`
+          );
+
+
+          nextTurn();
+
+        }
+      }
+
+    ]
+
+  );
+
+}
+
+
+function attack(
+  player,
+  other
+){
+
+  const success =
+    Math.random()<0.68;
+
+
+  if(success){
+
+    const effect =
+      random(1,4);
+
+
+    let text="";
+
+
+    if(effect===1){
+
+      const n=random(2,3);
+
+      game.players[other].pos =
+        Math.max(
+          0,
+          game.players[other].pos-n
+        );
+
+      text =
+        `${game.players[other].name} 后退 ${n} 格。`;
+
+    }
+
+
+    if(effect===2){
+
+      game.players[other].pos =
+        Math.max(
+          0,
+          game.players[other].pos-2
+        );
+
+      text =
+        `${game.players[other].name} 后退 2 格。`;
+
+    }
+
+
+    if(effect===3){
+
+      game.extraRoll=true;
+
+      text =
+        `${game.players[player].name} 获得一次额外掷骰。`;
+
+    }
+
+
+    if(effect===4){
+
+      text =
+        `${game.players[player].name} 下一次任务自动完成。`;
+
+    }
+
+
+    updateTokens();
+
+
+    addLog(
+      `${game.players[player].name} 攻击成功：${text}`
+    );
+
+
+    showModal(
+      "⚔️ 攻击成功",
+      text,
+      [
+        {
+          text:"确定",
+          className:"success",
+          action:()=>{
+
+            if(
+              game.players[other].pos>=
+              MAX_POS
+            ){
+
+              win(other);
+
+            }
+            else{
+
+              nextTurn();
+
+            }
+
+          }
+        }
+      ]
+    );
+
+  }
+  else{
+
+    const penalty =
+      random(2,3);
+
+
+    game.players[player].pos =
+      Math.max(
+        0,
+        game.players[player].pos-
+        penalty
+      );
+
+
+    updateTokens();
+
+
+    addLog(
+      `${game.players[player].name} 攻击失败！${game.players[other].name} 反击，后退 ${penalty} 格。`
+    );
+
+
+    showModal(
+      "💥 攻击失败",
+      `${game.players[other].name} 反击！你后退 ${penalty} 格。`,
+      [
+        {
+          text:"承受反击",
+          className:"danger",
+          action:()=>nextTurn()
+        }
+      ]
+    );
+
+  }
+
+}
+
+
+function specialEffect(
+  player,
+  other
+){
+
+  const type =
+    random(1,5);
+
+
+  let text="";
+
+
+  if(type===1){
+
+    game.players[player].pos =
+      Math.min(
+        MAX_POS,
+        game.players[player].pos+2
+      );
+
+    text="你前进 2 格。";
+
+  }
+
+
+  if(type===2){
+
+    game.players[other].pos =
+      Math.max(
+        0,
+        game.players[other].pos-2
+      );
+
+    text =
+      `${game.players[other].name} 后退 2 格。`;
+
+  }
+
+
+  if(type===3){
+
+    game.extraRoll=true;
+
+    text =
+      "获得一次额外掷骰机会。";
+
+  }
+
+
+  if(type===4){
+
+    text =
+      "下一次任务自动完成。";
+
+  }
+
+
+  if(type===5){
+
+    game.players[player].pos =
+      Math.max(
+        0,
+        game.players[player].pos-1
+      );
+
+    text =
+      "运气不好，你后退 1 格。";
+
+  }
+
+
+  updateTokens();
+
+
+  addLog(
+    `${game.players[player].name} 触发特殊效果：${text}`
+  );
+
+
+  showModal(
+    "🎲 随机特殊效果",
+    text,
+    [
+      {
+        text:"确定",
+        className:"success",
+        action:()=>nextTurn()
+      }
+    ]
+  );
+
+}
+
+
+function nextTurn(){
+
+  if(game.over) return;
+
+
+  if(game.extraRoll){
+
+    game.extraRoll=false;
+
+    status(
+      `${game.players[game.current].name} 获得额外一次掷骰`
+    );
+
+    saveGame();
+
+    return;
+
+  }
+
+
+  game.current =
+    game.current===1 ? 2 : 1;
+
+
+  status(
+    `${game.players[game.current].name} 的回合`
+  );
+
+
+  updatePlayers();
+
+  saveGame();
+
+}
+
+
+function win(player){
+
+  game.over=true;
+
+
+  addLog(
+    `🏆 ${game.players[player].name} 到达终点，获得胜利！`
+  );
+
+
+  status(
+    `${game.players[player].name} 获胜！`
+  );
+
+
+  showModal(
+    "🏆 恭喜获胜",
+    `${game.players[player].name} 率先到达终点！`,
+    [
+
+      {
+        text:"🔄 再来一局",
+        className:"success",
+        action:restartGame
+      }
+
+    ]
+  );
+
+}
+
+
+function saveGame(){
+
+  if(!game.started) return;
+
+
+  try{
+
+    localStorage.setItem(
+      "couple_flight_chess_v2",
+      JSON.stringify(game)
+    );
+
+  }
+  catch(e){}
+
+}
+
+
+function loadGame(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(
+        "couple_flight_chess_v2"
+      );
+
+
+    if(!raw) return false;
+
+
+    const saved =
+      JSON.parse(raw);
+
+
+    if(!saved.started) return false;
+
+
+    Object.assign(
+      game,
+      saved
+    );
+
+
+    createBoard();
+
+    updateTokens();
+
+    return true;
+
+  }
+  catch(e){
+
+    return false;
+
+  }
+
+}
+
+
+function restartGame(){
+
+  localStorage.removeItem(
+    "couple_flight_chess_v2"
+  );
+
+
+  game.started=false;
+
+  game.over=false;
+
+  game.current=1;
+
+  game.players[1].pos=0;
+
+  game.players[2].pos=0;
+
+  showSetup();
+
+}
+
+
+$("rollBtn").addEventListener(
+  "click",
+  rollDice
+);
+
+
+$("specialBtn").addEventListener(
+  "click",
+  ()=>{
+
+    if(!game.started||game.over)
+      return;
+
+
+    specialEffect(
+      game.current,
+      game.current===1?2:1
+    );
+
+  }
+);
+
+
+$("saveBtn").addEventListener(
+  "click",
+  ()=>{
+
+    saveGame();
+
+    status("✅ 游戏进度已保存");
+
+  }
+);
+
+
+$("restartBtn").addEventListener(
+  "click",
+  ()=>{
+
+    showModal(
+      "🔄 重新开始",
+      "确定要结束当前游戏并重新开始吗？",
+      [
+
+        {
+          text:"确定重新开始",
+          className:"danger",
+          action:restartGame
+        },
+
+        {
+          text:"取消",
+          className:"secondary",
+          action:()=>{}
+        }
+
+      ]
+    );
+
+  }
+);
+
+
+createBoard();
+
+
+if(!loadGame()){
+
+  showSetup();
+
+}
+else{
+
+  $("setup")
+    .classList
+    .add("hidden");
 
 }
 
