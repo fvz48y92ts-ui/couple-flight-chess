@@ -3,84 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>情侣飞行棋 Pro</title>
 <style>
-:root{--bg:#f2f2f7;--card:#fff;--text:#1c1c1e;--text2:#8e8e93;--primary:#007aff;--radius:16px;--shadow:0 4px 20px rgba(0,0,0,.08);--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Noto Sans SC","PingFang SC",sans-serif;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+:root{--bg:#f2f2f7;--card:#fff;--text:#1c1c1e;--text2:#8e8e93;--primary:#007aff;--radius:16px;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Noto Sans SC",sans-serif;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden;user-select:none}
 #app{height:100%;position:relative}
-.page{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(14px + var(--st)) 14px calc(14px + var(--sb))}
+.page{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg);overflow-y:auto;padding:calc(14px + var(--st)) 14px calc(14px + var(--sb))}
 .page.active{display:flex}
 .pc{max-width:420px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:14px}
 .btn{border:none;border-radius:13px;font-size:16px;font-weight:600;padding:12px 16px;cursor:pointer;font-family:var(--font)}
-.btn:active{opacity:.85;transform:scale(.98)}
+.btn:active{opacity:.85}
 .btn-p{background:var(--primary);color:#fff}
 .btn-s{background:#e5e5ea;color:var(--text)}
 .btn-l{width:100%;padding:14px;font-size:17px}
 .btn:disabled{opacity:.4}
-.logo{text-align:center;font-size:24px;font-weight:700;margin-top:6px}
+.logo{text-align:center;font-size:24px;font-weight:700}
 .logo span{color:var(--primary)}
-.card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
-.rl{padding-left:16px;line-height:1.55;font-size:13.5px}
-.rl li{margin-bottom:5px}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
 .pt{text-align:center;font-size:19px;font-weight:700}
 .ps{display:flex;align-items:center;gap:8px}
-.pcard{flex:1;background:var(--card);border-radius:var(--radius);padding:12px 8px;text-align:center;box-shadow:var(--shadow)}
+.pcard{flex:1;background:var(--card);border-radius:var(--radius);padding:12px 8px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.08)}
 .av{width:48px;height:48px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff}
 .ni{width:100%;border:none;background:#f2f2f7;border-radius:9px;padding:7px;font-size:13px;text-align:center;font-family:var(--font);margin-bottom:6px}
 .cp{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
 .cd{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent}
 .cd.active{border-color:#1c1c1e;transform:scale(1.1)}
-.vs{font-weight:700;color:var(--text2);font-size:14px}
-.or{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px}
+.vs{font-weight:700;color:var(--text2)}
+.or{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .seg{display:flex;background:#e5e5ea;border-radius:9px;padding:2px;flex-wrap:wrap;gap:2px}
 .seg button{border:none;background:transparent;padding:5px 9px;border-radius:7px;font-size:12px;font-weight:500;font-family:var(--font);cursor:pointer}
 .seg button.active{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .stitle{font-size:12px;color:var(--text2);margin-bottom:4px}
 #page-game{padding:0}
-.gh{display:flex;align-items:center;justify-content:space-between;padding:calc(8px + var(--st)) 12px 8px;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.05);z-index:10}
+.gh{display:flex;align-items:center;justify-content:space-between;padding:calc(8px + var(--st)) 12px 8px;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,.05)}
 .ti{display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px}
 .td{width:9px;height:9px;border-radius:50%;background:#ccc}
-.bw{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:4px}
-.board{position:relative;width:min(92vw,340px);height:min(92vw,340px);background:var(--card);border-radius:50%;box-shadow:var(--shadow)}
-.cell{position:absolute;width:24px;height:24px;border-radius:50%;background:#e8e8ed;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--text2);transform:translate(-50%,-50%);z-index:1}
-.cell.fly{background:#ffd60a;color:#1c1c1e;font-size:10px}
-.cell.rest{background:#bf5af2;color:#fff;font-size:10px}
-.piece{position:absolute;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;transform:translate(-50%,-50%);z-index:5;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:left .4s cubic-bezier(.34,1.3,.64,1),top .4s cubic-bezier(.34,1.3,.64,1)}
-.finish{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#ff3b30,#ff9500);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;z-index:3}
-.gf{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid rgba(0,0,0,.05);padding:6px 12px calc(6px + var(--sb));display:flex;flex-direction:column;align-items:center;gap:5px}
+.bw{flex:1;display:flex;align-items:center;justify-content:center;padding:4px}
+.board{position:relative;width:min(92vw,340px);height:min(92vw,340px);background:var(--card);border-radius:50%;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.cell{position:absolute;width:22px;height:22px;border-radius:50%;background:#e8e8ed;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;color:var(--text2);transform:translate(-50%,-50%)}
+.cell.fly{background:#ffd60a;color:#1c1c1e}
+.cell.rest{background:#bf5af2;color:#fff}
+.piece{position:absolute;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;transform:translate(-50%,-50%);z-index:5;box-shadow:0 2px 5px rgba(0,0,0,.3);transition:left .35s,top .35s}
+.finish{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#ff3b30,#ff9500);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;z-index:3}
+.gf{background:rgba(255,255,255,.92);padding:6px 12px calc(6px + var(--sb));display:flex;flex-direction:column;align-items:center;gap:5px;border-top:1px solid rgba(0,0,0,.05)}
 .sb{display:flex;gap:4px;min-height:26px;flex-wrap:wrap;justify-content:center}
-.sc{background:linear-gradient(135deg,#5856d6,#007aff);color:#fff;font-size:10px;padding:3px 8px;border-radius:12px;font-weight:500;cursor:pointer}
+.sc{background:linear-gradient(135deg,#5856d6,#007aff);color:#fff;font-size:10px;padding:3px 8px;border-radius:12px;cursor:pointer}
 .db{width:64px;height:64px;border-radius:15px;border:none;background:var(--card);box-shadow:0 4px 12px rgba(0,0,0,.12);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .dice{width:44px;height:44px;background:#1c1c1e;border-radius:9px;color:#fff;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .dice.rolling{animation:dr .11s infinite}
-@keyframes dr{0%{transform:rotate(0) scale(1)}50%{transform:rotate(10deg) scale(1.07)}100%{transform:rotate(-10deg) scale(1)}}
+@keyframes dr{0%{transform:rotate(0)}50%{transform:rotate(12deg) scale(1.08)}100%{transform:rotate(-12deg)}}
 .dh{font-size:11px;color:var(--text2)}
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:100}
 .mo.ctr{align-items:center}
-.modal{background:var(--card);border-radius:18px 18px 0 0;width:100%;max-width:420px;padding:18px 14px calc(16px + var(--sb));max-height:86vh;overflow-y:auto}
+.modal{background:var(--card);border-radius:18px 18px 0 0;width:100%;max-width:420px;padding:18px 14px calc(16px + var(--sb));max-height:85vh;overflow-y:auto}
 .mo.ctr .modal{border-radius:16px;margin:12px}
-.mt{font-size:17px;font-weight:700;text-align:center;margin-bottom:6px}
+.mt{font-size:17px;font-weight:700;text-align:center;margin-bottom:8px}
 .mb{margin-bottom:14px;line-height:1.45;font-size:14.5px;text-align:center}
 .ma{display:flex;flex-direction:column;gap:7px}
-.bb{width:110px;height:140px;margin:0 auto 12px;perspective:500px}
-.bc{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
-.bc.flipped{transform:rotateY(180deg)}
-.bf{position:absolute;inset:0;backface-visibility:hidden;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
-.bbk{background:linear-gradient(135deg,#5856d6,#007aff);color:#fff}
-.bfr{background:#fff;border:2px solid #e5e5ea;transform:rotateY(180deg);flex-direction:column;padding:8px;text-align:center;font-size:12px;line-height:1.3}
-.tc{width:74px;height:74px;margin:8px auto;border-radius:50%;background:conic-gradient(var(--primary) var(--pg),#e5e5ea 0);display:flex;align-items:center;justify-content:center;position:relative}
-.tc::before{content:'';position:absolute;inset:5px;background:#fff;border-radius:50%}
-.tt{position:relative;font-size:18px;font-weight:700;color:var(--primary)}
-#toast{position:fixed;top:15%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.78);color:#fff;padding:7px 14px;border-radius:14px;font-size:12.5px;z-index:200;opacity:0;transition:opacity .25s;max-width:78%;text-align:center;pointer-events:none}
-.el{max-height:52vh;overflow-y:auto}
-.ei{background:#f8f8fa;border-radius:10px;padding:8px 10px;margin-bottom:6px}
-.ei textarea{width:100%;border:1px solid #e5e5ea;border-radius:7px;padding:6px;font-size:12px;font-family:var(--font);resize:none}
-.ei .row{display:flex;gap:6px;align-items:center;margin-top:4px}
-.ei label{font-size:11px;color:var(--text2)}
-.ei input[type=number]{width:60px;border:1px solid #e5e5ea;border-radius:6px;padding:4px;font-size:12px}
+#toast{position:fixed;top:15%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.78);color:#fff;padding:7px 14px;border-radius:14px;font-size:12.5px;z-index:200;opacity:0;transition:opacity .25s;pointer-events:none}
 </style>
 </head>
 <body>
@@ -88,17 +69,18 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 <section id="page-rules" class="page active">
 <div class="pc">
 <h1 class="logo">情侣飞行棋 <span>Pro</span></h1>
-<div class="card"><h2 style="text-align:center;font-size:16px;margin-bottom:8px">游戏规则</h2>
-<ol class="rl">
-<li>双人轮流，共用一台手机。</li>
-<li>必须摇到 6 才能出发。</li>
-<li>格子为盲盒，落地后揭晓任务。</li>
-<li>可完成或跳过（跳过接受小惩罚）。</li>
-<li>相遇可选择进攻或善良。</li>
-<li>支持自定义任务、不喝酒、多种氛围与格子数量。</li>
-</ol></div>
-<button class="btn btn-p btn-l" id="btnRules">我已了解，开始</button>
-</div></section>
+<div class="card">
+<ol style="padding-left:18px;font-size:13.5px;line-height:1.55">
+<li>双人轮流，共用一台手机</li>
+<li>必须摇到6才能出发</li>
+<li>必须点数正好到达终点，超过则回退</li>
+<li>休息格会跳过自己下一回合</li>
+<li>支持1~3个棋子，全部到达才算赢</li>
+</ol>
+</div>
+<button class="btn btn-p btn-l" id="btnRules">开始</button>
+</div>
+</section>
 
 <section id="page-setup" class="page">
 <div class="pc">
@@ -108,13 +90,19 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 <div class="vs">VS</div>
 <div class="pcard"><div class="av" id="av1">可</div><input class="ni" id="n1" value="小可爱" maxlength="6"><div class="cp" id="c1"></div></div>
 </div>
+<div class="card"><div class="stitle">每人棋子数量</div>
+<div class="seg" id="pNum">
+<button data-v="1" class="active">1个</button>
+<button data-v="2">2个</button>
+<button data-v="3">3个</button>
+</div></div>
 <div class="card"><div class="stitle">格子数量</div>
 <div class="seg" id="gNum">
-<button data-v="24">24格·快</button>
-<button data-v="36" class="active">36格·标准</button>
-<button data-v="48">48格·丰富</button>
+<button data-v="24">24格</button>
+<button data-v="36" class="active">36格</button>
+<button data-v="48">48格</button>
 </div></div>
-<div class="card"><div class="stitle">氛围倾向</div>
+<div class="card"><div class="stitle">氛围</div>
 <div class="seg" id="mood">
 <button data-v="sweet">甜</button>
 <button data-v="mix" class="active">混合</button>
@@ -122,25 +110,25 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 <button data-v="wild">疯</button>
 </div></div>
 <div class="card">
-<div class="or"><span style="font-size:13px">不喝酒模式</span>
+<div class="or"><span style="font-size:13px">不喝酒</span>
 <div class="seg" id="nd"><button data-v="0" class="active">关</button><button data-v="1">开</button></div></div>
-<div class="or"><span style="font-size:13px">音效震动</span>
-<div class="seg" id="snd"><button data-v="1" class="active">开</button><button data-v="0">关</button></div></div>
 </div>
 <button class="btn btn-p btn-l" id="btnStart">进入游戏</button>
-<button class="btn btn-s btn-l" id="btnCustom" style="margin-top:-4px">自定义任务</button>
-</div></section>
+</div>
+</section>
 
 <section id="page-game" class="page">
-<header class="gh"><div class="ti"><span class="td" id="td"></span><span id="tt">准备中</span></div>
-<button style="background:none;border:none;font-size:20px;padding:6px" id="btnSet">⚙️</button></header>
+<header class="gh">
+<div class="ti"><span class="td" id="td"></span><span id="tt">准备中</span></div>
+<button style="background:none;border:none;font-size:20px" id="btnSet">⚙️</button>
+</header>
 <div class="bw"><div class="board" id="board"><div class="finish">终点</div></div></div>
 <div class="gf">
 <div class="sb" id="sbar"></div>
 <button class="db" id="dbtn"><div class="dice" id="dice">?</div></button>
 <p class="dh" id="dhint">点击掷骰子</p>
-<button class="btn btn-s" id="btnRr" disabled style="padding:7px 12px;font-size:12px">重掷 (1)</button>
-</div></section>
+</div>
+</section>
 </div>
 <div id="toast"></div>
 <div id="mroot"></div>
@@ -148,96 +136,42 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 <script>
 const COLORS=["#007aff","#ff2d55","#5856d6","#ff9500","#34c759","#af52de","#ff3b30","#00c7be"];
 const POOL={
-sweet:[
-{text:"对视30秒，谁先笑谁接受小惩罚",time:30,type:"normal"},
-{text:"用只有对方听得懂的方式说一句肉麻的话",type:"normal"},
-{text:"描述对方最吸引你的一个细节",type:"normal"},
-{text:"闭眼听对方呼吸20秒",time:20,type:"normal"},
-{text:"说一件你们之间很甜的小事",type:"normal"},
-{text:"模仿对方一个习惯动作",type:"normal"},
-{text:"认真夸对方三个优点",type:"normal"},
-{text:"靠在对方肩膀安静待30秒",time:30,type:"normal"},
-{text:"用气音说一句想对对方说的话",type:"normal"},
-{text:"轻轻摸对方的手或头发20秒",time:20,type:"normal"},
-{text:"看着对方眼睛说「我喜欢你」",type:"normal"},
-{text:"分享一个最近想对方的瞬间",type:"normal"},
-{text:"给对方一个温柔的额头吻",type:"normal"},
-{text:"牵手并十指相扣30秒",time:30,type:"normal"}
-],
-desire:[
-{text:"为对方脱一件衣服",type:"normal"},
-{text:"亲吻对方嘴唇15秒",time:15,type:"normal"},
-{text:"舌吻30秒",time:30,type:"normal"},
-{text:"手伸进对方衣服里抚摸20秒",time:20,type:"normal"},
-{text:"亲吻对方脖子或锁骨20秒",time:20,type:"normal"},
-{text:"自己脱一件衣服",type:"normal"},
-{text:"从背后抱住对方爱抚1分钟",time:60,type:"normal"},
-{text:"让对方在你身上任意亲吻30秒",time:30,type:"normal"},
-{text:"深情舌吻40秒",time:40,type:"normal"},
-{text:"为对方用手服务1分钟",time:60,type:"fly"},
-{text:"舔对方耳垂或脖子20秒",time:20,type:"normal"},
-{text:"隔着衣服抚摸对方敏感部位30秒",time:30,type:"normal"},
-{text:"吻对方的手指或手背",type:"normal"},
-{text:"在对方身上留下一个吻痕",type:"normal"}
-],
-wild:[
-{text:"后入式互动1分钟",time:60,type:"fly"},
-{text:"让对方坐在你脸上30秒",time:30,type:"normal"},
-{text:"观音坐莲姿势互动1分钟",time:60,type:"normal"},
-{text:"用手挑逗对方敏感部位30秒",time:30,type:"normal"},
-{text:"在对方耳边说一句很色的话",type:"normal"},
-{text:"自己打屁股3下，要有声音",type:"normal"},
-{text:"做一件对方现在想看的事（1分钟）",time:60,type:"normal"},
-{text:"舔或吸吮对方身体任意部位30秒",time:30,type:"normal"},
-{text:"用嘴喂对方喝一口（或不喝就亲）",type:"normal"},
-{text:"让对方指挥你做一个动作",type:"normal"}
-],
-drink:[{text:"喝半杯",type:"normal"},{text:"喝一杯",type:"normal"},{text:"喝半杯",type:"normal"}],
-rest:[{text:"下一轮休息",type:"rest"},{text:"下一轮休息",type:"rest"}],
-special:[{text:"后退2格",type:"normal"},{text:"后退3格",type:"normal"},{text:"后退2格",type:"normal"}]
+sweet:[{text:"对视30秒",time:30},{text:"说一句肉麻的话"},{text:"描述对方最吸引你的细节"},{text:"闭眼听呼吸20秒",time:20},{text:"说一件甜的小事"},{text:"夸对方三个优点"},{text:"额头吻"},{text:"十指相扣30秒",time:30}],
+desire:[{text:"为对方脱一件衣服"},{text:"亲吻嘴唇15秒",time:15},{text:"舌吻30秒",time:30},{text:"抚摸20秒",time:20},{text:"自己脱一件"},{text:"背后拥抱爱抚1分钟",time:60},{text:"深情舌吻40秒",time:40},{text:"用手服务1分钟",time:60,type:"fly"}],
+wild:[{text:"后入1分钟",time:60,type:"fly"},{text:"坐脸30秒",time:30},{text:"观音坐莲1分钟",time:60},{text:"挑逗30秒",time:30},{text:"说一句色色的话"},{text:"自己打屁股3下"}],
+drink:[{text:"喝半杯"},{text:"喝一杯"}],
+rest:[{text:"下一轮休息",type:"rest"}],
+special:[{text:"后退2格"},{text:"后退3格"}]
 };
-const SKILLS=[{id:"acc",name:"加速卡"},{id:"int",name:"干扰卡"},{id:"shd",name:"免死金牌"},{id:"rer",name:"重掷卡"},{id:"swp",name:"互换卡"},{id:"dbl",name:"双倍卡"},{id:"truth",name:"真心话"}];
-const REW=["前进2格","前进3格","获得技能牌","免去下次任务","额外掷一次","让对方夸你一句"];
+const SKILLS=[{id:"acc",name:"加速"},{id:"int",name:"干扰"},{id:"shd",name:"免死"},{id:"rer",name:"重掷"},{id:"swp",name:"互换"}];
 
 const S={
-players:[{name:"小锐",color:COLORS[0],pos:-1,skills:[],skipNext:false,stats:zs()},{name:"小可爱",color:COLORS[1],pos:-1,skills:[],skipNext:false,stats:zs()}],
-cur:0,n:36,mood:"mix",noDrink:false,sound:true,
-started:[false,false],rr:1,over:false,dbl:false,tasks:[],
-custom:JSON.parse(localStorage.getItem("cfc_c2")||"{}")
+  players:[
+    {name:"小锐",color:COLORS[0],pieces:[],skipTurn:false,skills:[],stats:{steps:0}},
+    {name:"小可爱",color:COLORS[1],pieces:[],skipTurn:false,skills:[],stats:{steps:0}}
+  ],
+  cur:0, n:36, pieceCount:1, mood:"mix", noDrink:false,
+  started:false, over:false, lastRoll:0, tasks:[]
 };
-function zs(){return{steps:0,drinks:0,strips:0,intimate:0,skips:0,attacks:0}}
 
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
 function toast(m){const t=$("#toast");t.textContent=m;t.style.opacity=1;clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity=0,1800)}
-function vibe(m=25){if(S.sound&&navigator.vibrate)navigator.vibrate(m)}
-function beep(f=700,d=.07){if(!S.sound)return;try{const c=window._ac||(window._ac=new(AudioContext||webkitAudioContext)());const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=f;g.gain.value=.06;o.start();o.stop(c.currentTime+d)}catch(e){}}
 
 function show(p){$$(".page").forEach(x=>x.classList.remove("active"));$("#page-"+p).classList.add("active")}
 
 function makePool(){
   let arr=[];
-  const add=(src,cnt)=>{for(let i=0;i<cnt;i++)arr.push(Object.assign({},src[i%src.length]))};
-
-  if(S.mood==="sweet"){add(POOL.sweet,22);add(POOL.desire,12);add(POOL.rest,6);add(POOL.special,6)}
-  else if(S.mood==="desire"){add(POOL.desire,18);add(POOL.sweet,10);add(POOL.wild,10);add(POOL.rest,6);add(POOL.special,6)}
-  else if(S.mood==="wild"){add(POOL.wild,16);add(POOL.desire,14);add(POOL.sweet,8);add(POOL.rest,6);add(POOL.special,6)}
-  else{add(POOL.sweet,14);add(POOL.desire,14);add(POOL.wild,10);add(POOL.rest,6);add(POOL.special,6)}
-
-  if(!S.noDrink){add(POOL.drink,10)}
-  else{add(POOL.sweet,8);add(POOL.rest,6)}
-
+  const add=(src,c)=>{for(let i=0;i<c;i++)arr.push(Object.assign({},src[i%src.length]))};
+  if(S.mood==="sweet"){add(POOL.sweet,20);add(POOL.desire,8);add(POOL.rest,6);add(POOL.special,6)}
+  else if(S.mood==="desire"){add(POOL.desire,16);add(POOL.sweet,8);add(POOL.wild,8);add(POOL.rest,6);add(POOL.special,6)}
+  else if(S.mood==="wild"){add(POOL.wild,14);add(POOL.desire,12);add(POOL.sweet,6);add(POOL.rest,6);add(POOL.special,6)}
+  else{add(POOL.sweet,12);add(POOL.desire,12);add(POOL.wild,8);add(POOL.rest,6);add(POOL.special,6)}
+  if(!S.noDrink) add(POOL.drink,8); else {add(POOL.sweet,6);add(POOL.rest,4)}
   for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}
   arr=arr.slice(0,S.n);
-
-  if(!arr.some(t=>t.type==="fly")) arr[Math.min(Math.floor(S.n*0.3),S.n-1)].type="fly";
-  if(!arr.some(t=>t.type==="rest")) arr[Math.min(Math.floor(S.n*0.6),S.n-1)].type="rest";
-
-  arr=arr.map((t,i)=>{
-    const c=S.custom[i];
-    if(c) return Object.assign({},t,{text:c.text||t.text,time:c.time!=null?c.time:t.time});
-    return t;
-  });
+  if(!arr.some(t=>t.type==="fly")) arr[Math.floor(S.n*0.3)].type="fly";
+  if(!arr.some(t=>t.type==="rest")) arr[Math.floor(S.n*0.55)].type="rest";
   S.tasks=arr;
 }
 
@@ -257,37 +191,38 @@ function init(){
   $("#btnRules").onclick=()=>show("setup");
   $("#n0").oninput=e=>{S.players[0].name=e.target.value.trim()||"小锐";$("#av0").textContent=S.players[0].name[0]};
   $("#n1").oninput=e=>{S.players[1].name=e.target.value.trim()||"小可爱";$("#av1").textContent=S.players[1].name[0]};
+  $$("#pNum button").forEach(b=>b.onclick=()=>{$$("#pNum button").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.pieceCount=+b.dataset.v});
   $$("#gNum button").forEach(b=>b.onclick=()=>{$$("#gNum button").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.n=+b.dataset.v});
   $$("#mood button").forEach(b=>b.onclick=()=>{$$("#mood button").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.mood=b.dataset.v});
   $$("#nd button").forEach(b=>b.onclick=()=>{$$("#nd button").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.noDrink=b.dataset.v==="1"});
-  $$("#snd button").forEach(b=>b.onclick=()=>{$$("#snd button").forEach(x=>x.classList.remove("active"));b.classList.add("active");S.sound=b.dataset.v==="1"});
   $("#btnStart").onclick=start;
-  $("#btnCustom").onclick=()=>{makePool();openCustom()};
   $("#dbtn").onclick=roll;
-  $("#btnRr").onclick=()=>{if(S.rr>0){S.rr--;updTurn();roll()}};
-  $("#btnSet").onclick=openSet;
+  $("#btnSet").onclick=()=>modal("设置","",[{t:"重新开始",p:1,f:()=>start()},{t:"返回设置",f:()=>show("setup")},{t:"关闭",f:()=>{}}]);
 }
 
 function start(){
   S.players[0].name=$("#n0").value.trim()||"小锐";
   S.players[1].name=$("#n1").value.trim()||"小可爱";
-  S.cur=0;S.started=[false,false];S.rr=1;S.over=false;S.dbl=false;
-  S.players.forEach(p=>{p.pos=-1;p.skills=[];p.skipNext=false;p.stats=zs()});
+  S.cur=0;S.over=false;S.lastRoll=0;
+  S.players.forEach((p,pid)=>{
+    p.pieces=[];
+    p.skipTurn=false;
+    p.skills=[];
+    p.stats={steps:0};
+    for(let i=0;i<S.pieceCount;i++) p.pieces.push({id:i,pos:-1}); // -1=基地
+  });
   makePool();
-  if(S.tasks.length!==S.n){toast("任务生成异常，请重试");return}
   buildBoard();
-  updTurn();
+  updateUI();
   show("game");
   toast(S.players[0].name+" 先手，摇到6出发");
-  beep(600,.1);
 }
 
 function buildBoard(){
   const b=$("#board");
   $$(".cell,.piece").forEach(e=>e.remove());
-  const n=S.n;
-  for(let i=0;i<n;i++){
-    const a=(i/n)*Math.PI*2-Math.PI/2;
+  for(let i=0;i<S.n;i++){
+    const a=(i/S.n)*Math.PI*2-Math.PI/2;
     const x=50+41*Math.cos(a),y=50+41*Math.sin(a);
     const c=document.createElement("div");
     c.className="cell";c.style.left=x+"%";c.style.top=y+"%";
@@ -297,40 +232,55 @@ function buildBoard(){
     else c.textContent=i+1;
     b.appendChild(c);
   }
+  // 绘制所有棋子
   S.players.forEach((p,pid)=>{
-    const el=document.createElement("div");
-    el.className="piece";el.id="p"+pid;
-    el.style.background=p.color;el.textContent=p.name[0];
-    el.style.left=(pid?80:20)+"%";el.style.top="50%";
-    b.appendChild(el);
+    p.pieces.forEach((pc,idx)=>{
+      const el=document.createElement("div");
+      el.className="piece";el.id=`pc${pid}_${idx}`;
+      el.style.background=p.color;
+      el.textContent=(idx+1);
+      el.style.left=(pid===0?18:82)+"%";
+      el.style.top=(40+idx*12)+"%";
+      b.appendChild(el);
+    });
   });
-}
-function mv(pid){
-  const p=S.players[pid],el=$("#p"+pid);
-  if(!el)return;
-  if(p.pos<0){el.style.left=(pid?80:20)+"%";el.style.top="50%";return}
-  if(p.pos>=S.n){el.style.left="50%";el.style.top="50%";return}
-  const a=(p.pos/S.n)*Math.PI*2-Math.PI/2;
-  el.style.left=(50+41*Math.cos(a))+"%";
-  el.style.top=(50+41*Math.sin(a))+"%";
+  updatePieces();
 }
 
-function updTurn(){
+function updatePieces(){
+  S.players.forEach((p,pid)=>{
+    p.pieces.forEach((pc,idx)=>{
+      const el=$(`#pc${pid}_${idx}`);
+      if(!el)return;
+      if(pc.pos<0){ // 基地
+        el.style.left=(pid===0?18:82)+"%";
+        el.style.top=(38+idx*14)+"%";
+      }else if(pc.pos>=S.n){ // 终点
+        el.style.left="50%";
+        el.style.top=(42+idx*8)+"%";
+      }else{
+        const a=(pc.pos/S.n)*Math.PI*2-Math.PI/2;
+        // 稍微错开一点，避免完全重叠
+        const offset=(idx- (S.pieceCount-1)/2)*3;
+        el.style.left=(50+41*Math.cos(a)+offset)+"%";
+        el.style.top=(50+41*Math.sin(a)+offset)+"%";
+      }
+    });
+  });
+}
+
+function updateUI(){
   const p=S.players[S.cur];
   $("#td").style.background=p.color;
-  $("#tt").textContent=p.name+" 的回合";
-  $("#btnRr").disabled=S.rr<=0;
-  $("#btnRr").textContent="重掷 ("+S.rr+")";
-  renderSk();
-}
-function renderSk(){
+  $("#tt").textContent=p.name+(p.skipTurn?" (将被跳过)":"")+" 的回合";
+  // 技能
   const bar=$("#sbar");bar.innerHTML="";
-  S.players[S.cur].skills.forEach((id,idx)=>{
+  p.skills.forEach((id,i)=>{
     const sk=SKILLS.find(s=>s.id===id);
     if(!sk)return;
     const el=document.createElement("div");
     el.className="sc";el.textContent=sk.name;
-    el.onclick=()=>useSk(id,idx);
+    el.onclick=()=>useSkill(id,i);
     bar.appendChild(el);
   });
 }
@@ -338,195 +288,153 @@ function renderSk(){
 let rolling=false;
 function roll(){
   if(rolling||S.over)return;
+  const p=S.players[S.cur];
+  if(p.skipTurn){
+    p.skipTurn=false;
+    toast(p.name+" 被跳过");
+    nextTurn();
+    return;
+  }
   rolling=true;$("#dbtn").disabled=true;
   const d=$("#dice");d.classList.add("rolling");
-  vibe(20);beep(400,.05);
   let c=0;
   const iv=setInterval(()=>{
     d.textContent=1+Math.floor(Math.random()*6);
-    if(++c>11){
+    if(++c>10){
       clearInterval(iv);d.classList.remove("rolling");
       const r=1+Math.floor(Math.random()*6);
-      d.textContent=r;
-      setTimeout(()=>{onRoll(r);rolling=false;$("#dbtn").disabled=false},280);
+      d.textContent=r;S.lastRoll=r;
+      setTimeout(()=>{handleRoll(r);rolling=false;$("#dbtn").disabled=false},250);
     }
-  },65);
+  },60);
 }
-function onRoll(num){
-  const pid=S.cur,p=S.players[pid];
-  if(!S.started[pid]){
-    if(num===6){
-      S.started[pid]=true;p.pos=0;mv(pid);
-      toast(p.name+" 出发！");beep(850,.1);
-      setTimeout(()=>land(pid),380);
+
+function handleRoll(num){
+  const p=S.players[S.cur];
+  // 找出可以移动的棋子
+  const movable=[];
+  p.pieces.forEach((pc,idx)=>{
+    if(pc.pos<0){ // 基地，需要6
+      if(num===6) movable.push(idx);
+    }else if(pc.pos<S.n){ // 已在棋盘上
+      movable.push(idx);
+    }
+  });
+
+  if(movable.length===0){
+    toast("没有可移动的棋子");
+    nextTurn();
+    return;
+  }
+
+  if(movable.length===1){
+    movePiece(S.cur,movable[0],num);
+  }else{
+    // 弹出选择
+    const btns=movable.map(idx=>({
+      t:`棋子${idx+1}（位置${p.pieces[idx].pos<0?"基地":p.pieces[idx].pos+1}）`,
+      p:1,
+      f:()=>movePiece(S.cur,idx,num)
+    }));
+    modal("选择要移动的棋子","",btns);
+  }
+}
+
+function movePiece(pid,idx,steps){
+  const p=S.players[pid];
+  const pc=p.pieces[idx];
+  let from=pc.pos;
+
+  if(from<0){ // 从基地出发
+    // 不同玩家起点不同：玩家0从0，玩家1从 n/2
+    pc.pos = (pid===0 ? 0 : Math.floor(S.n/2));
+    toast(p.name+" 的棋子"+(idx+1)+" 出发");
+  }else{
+    let target=from+steps;
+    if(target>S.n){ // 超过终点，回退
+      const over=target-S.n;
+      target=S.n-over;
+      if(target<0) target=0;
+      toast("超过终点，回退到第"+(target+1)+"格");
+    }
+    if(target===S.n){
+      pc.pos=S.n;
+      toast("棋子"+(idx+1)+" 到达终点！");
     }else{
-      const a={1:"喝一口或亲一下",2:"亲吻对方脸颊",3:"拥抱10秒",4:"夸对方一句",5:"亲吻对方嘴唇"};
-      modal("摇到 "+num,a[num]||"亲一下",[{t:"完成",p:1,f:next}]);
+      pc.pos=target;
     }
+  }
+  p.stats.steps+=steps;
+  updatePieces();
+
+  // 检查是否全部到达
+  if(p.pieces.every(x=>x.pos>=S.n)){
+    setTimeout(()=>endGame(pid),500);
     return;
   }
-  let step=num;
-  if(S.dbl){step*=2;S.dbl=false;toast("双倍生效")}
-  go(pid,step);
-}
-function go(pid,step){
-  const p=S.players[pid];
-  p.pos+=step;p.stats.steps+=step;
-  if(p.pos>=S.n){p.pos=S.n;mv(pid);setTimeout(()=>end(pid),400);return}
-  mv(pid);
-  const oid=1-pid;
-  if(S.players[oid].pos===p.pos&&p.pos>=0){setTimeout(()=>meet(pid,oid),380);return}
-  setTimeout(()=>land(pid),380);
-}
 
-function land(pid){
-  const p=S.players[pid];
-  if(p.pos<0||p.pos>=S.n)return;
-  if(p.skipNext){p.skipNext=false;toast("免死金牌生效");next();return}
-  const task=S.tasks[p.pos];
-  if(!task){next();return}
-  const ov=document.createElement("div");
-  ov.className="mo ctr";
-  ov.innerHTML=`<div class="modal"><div class="mt">开盲盒</div><div class="bb"><div class="bc" id="bc"><div class="bf bbk">?</div><div class="bf bfr">${task.text}</div></div></div><div class="ma"><button class="btn btn-p" id="bf">翻开</button></div></div>`;
-  $("#mroot").appendChild(ov);
-  $("#bf").onclick=()=>{
-    $("#bc").classList.add("flipped");vibe([15,30,15]);beep(650,.08);
-    $("#bf").textContent="查看任务";
-    $("#bf").onclick=()=>{ov.remove();showTask(task,pid)};
-  };
-}
-function showTask(task,pid){
-  let th="";
-  if(task.time)th=`<div class="tc" id="tm" style="--pg:100%"><div class="tt">${task.time}</div></div>`;
-  modal("任务",`<div style="font-size:15px;font-weight:600;margin-bottom:6px">${task.text}</div>${th}`,[
-    {t:"完成任务",p:1,f:()=>done(task,pid)},
-    {t:"跳过（小惩罚）",f:()=>skip(pid)}
-  ]);
-  if(task.time){
-    let left=task.time,tot=task.time;
-    const iv=setInterval(()=>{
-      left--;
-      const el=$("#tm"),tx=el&&el.querySelector(".tt");
-      if(tx)tx.textContent=left;
-      if(el)el.style.setProperty("--pg",(left/tot*100)+"%");
-      if(left<=0){clearInterval(iv);vibe([140,60,140]);beep(280,.18)}
-    },1000);
-    window._tiv=iv;
+  // 落地任务（只对还在棋盘上的）
+  if(pc.pos>=0 && pc.pos<S.n){
+    setTimeout(()=>onLand(pid,pc.pos),400);
+  }else{
+    nextTurn();
   }
 }
-function done(task,pid){
-  if(window._tiv)clearInterval(window._tiv);
-  const p=S.players[pid];
-  if(task.text.includes("喝"))p.stats.drinks++;
-  if(task.text.includes("脱"))p.stats.strips++;
-  if(task.type==="fly"||/口交|后入|坐莲|挑逗|敏感/.test(task.text))p.stats.intimate++;
-  if(task.type==="fly"){
-    modal("飞跃机会","是否飞跃 +4 格？",[
-      {t:"飞跃！",p:1,f:()=>go(pid,4)},
-      {t:"不用",f:next}
-    ]);
+
+function onLand(pid,pos){
+  const task=S.tasks[pos];
+  if(!task){nextTurn();return}
+  if(task.type==="rest"){
+    S.players[pid].skipTurn=true;
+    modal("休息","下一回合你将被跳过",[{t:"知道了",p:1,f:nextTurn}]);
     return;
   }
-  if(task.text.includes("后退3格")){p.pos=Math.max(0,p.pos-3);mv(pid)}
-  else if(task.text.includes("后退2格")){p.pos=Math.max(0,p.pos-2);mv(pid)}
-  if(Math.random()<0.18)giveSk(pid);
-  next();
-}
-function skip(pid){
-  if(window._tiv)clearInterval(window._tiv);
-  S.players[pid].stats.skips++;
-  toast("跳过，接受小惩罚");
-  next();
-}
-
-function meet(a,o){
-  const A=S.players[a],O=S.players[o];
-  modal("相遇了！",A.name+" 追上了 "+O.name,[
-    {t:"进攻（打回基地）",p:1,f:()=>{O.pos=-1;S.started[o]=false;mv(o);A.stats.attacks++;toast(O.name+" 被打回");setTimeout(()=>land(a),280)}},
-    {t:"善良（随机奖励）",f:()=>{
-      const r=REW[Math.floor(Math.random()*REW.length)];
-      toast("奖励："+r);
-      if(r.includes("前进2"))go(a,2);
-      else if(r.includes("前进3"))go(a,3);
-      else if(r.includes("技能"))giveSk(a);
-      else if(r.includes("免去"))S.players[a].skipNext=true;
-      else if(r.includes("额外"))setTimeout(roll,350);
-      else setTimeout(()=>land(a),220);
-    }}
+  modal("任务",task.text+[task.time?`（${task.time}秒）`:""],[
+    {t:"完成",p:1,f:()=>{
+      if(task.type==="fly"){
+        // 简单飞跃
+        const p=S.players[pid];
+        // 找一个还在路上的棋子飞跃
+        const onBoard=p.pieces.find(x=>x.pos>=0&&x.pos<S.n);
+        if(onBoard){onBoard.pos=Math.min(S.n,onBoard.pos+4);updatePieces()}
+      }
+      nextTurn();
+    }},
+    {t:"跳过",f:nextTurn}
   ]);
 }
 
-function giveSk(pid){
-  const have=S.players[pid].skills;
-  const pool=SKILLS.filter(s=>!have.includes(s.id));
-  if(!pool.length)return;
-  const c=pool[Math.floor(Math.random()*pool.length)];
-  S.players[pid].skills.push(c.id);
-  toast("获得「"+c.name+"」");renderSk();
-}
-function useSk(id,idx){
-  const pid=S.cur,p=S.players[pid],o=S.players[1-pid];
-  p.skills.splice(idx,1);renderSk();beep(950,.08);
-  if(id==="acc"){const s=2+Math.floor(Math.random()*2);toast("加速+"+s);go(pid,s)}
-  else if(id==="int"){o.pos=Math.max(-1,o.pos-2);if(o.pos<0)S.started[1-pid]=false;mv(1-pid);toast("对方后退2格")}
-  else if(id==="shd"){p.skipNext=true;toast("免死金牌就绪")}
-  else if(id==="rer"){toast("重掷");roll()}
-  else if(id==="swp"){const t=p.pos;p.pos=o.pos;o.pos=t;mv(pid);mv(1-pid);toast("位置互换")}
-  else if(id==="dbl"){S.dbl=true;toast("下轮双倍")}
-  else if(id==="truth"){modal("真心话","请对方问你一个问题，你必须回答",[{t:"知道了",p:1,f:()=>{}}])}
+function nextTurn(){
+  S.cur=1-S.cur;
+  updateUI();
+  const p=S.players[S.cur];
+  if(p.skipTurn){
+    // 会在roll时处理
+  }
+  toast(p.name+" 的回合");
 }
 
-function next(){S.cur=1-S.cur;updTurn();const p=S.players[S.cur];toast(p.name+(S.started[S.cur]?"":" 的回合，摇到6出发"))}
-function end(wid){
+function endGame(wid){
   S.over=true;
-  const W=S.players[wid],L=S.players[1-wid];
-  modal("游戏结束",`<div style="text-align:left;font-size:13px;line-height:1.65"><p style="font-size:15px;font-weight:700;text-align:center;margin-bottom:6px">🎉 ${W.name} 获胜！</p><p>${W.name}：${W.stats.steps}步 / 亲密${W.stats.intimate} / 跳过${W.stats.skips}</p><p>${L.name}：${L.stats.steps}步 / 亲密${L.stats.intimate} / 跳过${L.stats.skips}</p></div>`,[
-    {t:"再来一局",p:1,f:()=>{closeM();start()}},
-    {t:"返回设置",f:()=>{closeM();show("setup")}}
+  modal("游戏结束",S.players[wid].name+" 的所有棋子都到达终点！",[
+    {t:"再来一局",p:1,f:()=>start()},
+    {t:"返回设置",f:()=>show("setup")}
   ]);
+}
+
+function useSkill(id,idx){
+  // 简化
+  S.players[S.cur].skills.splice(idx,1);
+  updateUI();
+  toast("技能已使用（简化效果）");
 }
 
 function modal(title,body,acts){
-  closeM();
-  const ov=document.createElement("div");
-  ov.className="mo";ov.id="cm";
-  ov.innerHTML=`<div class="modal"><div class="mt">${title}</div><div class="mb">${body}</div><div class="ma">${acts.map(a=>`<button class="btn ${a.p?"btn-p":"btn-s"}">${a.t}</button>`).join("")}</div></div>`;
-  $("#mroot").appendChild(ov);
-  ov.querySelectorAll(".btn").forEach((b,i)=>{b.onclick=()=>{closeM();if(acts[i].f)acts[i].f()}});
-}
-function closeM(){const m=$("#cm");if(m)m.remove()}
-
-function openSet(){
-  modal("设置",`<div style="text-align:left;font-size:12.5px;line-height:1.6"><p>格子：${S.n} | 氛围：${{sweet:"甜",mix:"混合",desire:"欲",wild:"疯"}[S.mood]}</p><p>不喝酒：${S.noDrink?"开":"关"} | 音效：${S.sound?"开":"关"}</p></div>`,[
-    {t:"自定义任务",f:()=>{makePool();openCustom()}},
-    {t:"重新开始",f:()=>start()},
-    {t:"返回设置页",f:()=>show("setup")},
-    {t:"关闭",p:1,f:()=>{}}
-  ]);
-}
-
-function openCustom(){
-  let html="<div class=\"el\">";
-  S.tasks.forEach((t,i)=>{
-    const c=S.custom[i]||{};
-    html+=`<div class="ei"><div style="font-size:11px;color:#8e8e93;margin-bottom:3px">第${i+1}格 ${t.type==="fly"?"✈️":t.type==="rest"?"😴":""}</div>
-<textarea rows="2" data-i="${i}" data-f="text">${c.text||t.text}</textarea>
-<div class="row"><label>秒数</label><input type="number" min="0" max="300" value="${c.time!=null?c.time:(t.time||0)}" data-i="${i}" data-f="time"></div></div>`;
+  const root=$("#mroot");
+  root.innerHTML=`<div class="mo"><div class="modal"><div class="mt">${title}</div><div class="mb">${body||""}</div><div class="ma">${acts.map(a=>`<button class="btn ${a.p?"btn-p":"btn-s"}">${a.t}</button>`).join("")}</div></div></div>`;
+  root.querySelectorAll(".btn").forEach((b,i)=>{
+    b.onclick=()=>{root.innerHTML="";if(acts[i].f)acts[i].f()};
   });
-  html+="</div>";
-  modal("自定义任务",html,[
-    {t:"保存",p:1,f:()=>{
-      $$(".ei textarea,.ei input").forEach(el=>{
-        const i=+el.dataset.i,f=el.dataset.f;
-        if(!S.custom[i])S.custom[i]={};
-        S.custom[i][f]=f==="time"?(+el.value||0):el.value;
-      });
-      localStorage.setItem("cfc_c2",JSON.stringify(S.custom));
-      toast("已保存");
-    }},
-    {t:"恢复默认",f:()=>{S.custom={};localStorage.removeItem("cfc_c2");toast("已恢复");closeM();makePool();openCustom()}},
-    {t:"关闭",f:()=>{}}
-  ]);
 }
 
 document.addEventListener("DOMContentLoaded",init);
