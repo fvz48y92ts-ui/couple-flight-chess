@@ -133,7 +133,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
 <section id="page-game" class="page">
 <header class="gh"><div class="ti"><span class="td" id="td"></span><span id="tt">准备中</span></div>
-<button class="icon-btn" id="btnSet" style="background:none;border:none;font-size:20px;padding:6px">⚙️</button></header>
+<button style="background:none;border:none;font-size:20px;padding:6px" id="btnSet">⚙️</button></header>
 <div class="bw"><div class="board" id="board"><div class="finish">终点</div></div></div>
 <div class="gf">
 <div class="sb" id="sbar"></div>
@@ -160,7 +160,9 @@ sweet:[
 {text:"用气音说一句想对对方说的话",type:"normal"},
 {text:"轻轻摸对方的手或头发20秒",time:20,type:"normal"},
 {text:"看着对方眼睛说「我喜欢你」",type:"normal"},
-{text:"分享一个最近想对方的瞬间",type:"normal"}
+{text:"分享一个最近想对方的瞬间",type:"normal"},
+{text:"给对方一个温柔的额头吻",type:"normal"},
+{text:"牵手并十指相扣30秒",time:30,type:"normal"}
 ],
 desire:[
 {text:"为对方脱一件衣服",type:"normal"},
@@ -174,7 +176,9 @@ desire:[
 {text:"深情舌吻40秒",time:40,type:"normal"},
 {text:"为对方用手服务1分钟",time:60,type:"fly"},
 {text:"舔对方耳垂或脖子20秒",time:20,type:"normal"},
-{text:"隔着衣服抚摸对方敏感部位30秒",time:30,type:"normal"}
+{text:"隔着衣服抚摸对方敏感部位30秒",time:30,type:"normal"},
+{text:"吻对方的手指或手背",type:"normal"},
+{text:"在对方身上留下一个吻痕",type:"normal"}
 ],
 wild:[
 {text:"后入式互动1分钟",time:60,type:"fly"},
@@ -185,11 +189,12 @@ wild:[
 {text:"自己打屁股3下，要有声音",type:"normal"},
 {text:"做一件对方现在想看的事（1分钟）",time:60,type:"normal"},
 {text:"舔或吸吮对方身体任意部位30秒",time:30,type:"normal"},
-{text:"用嘴喂对方喝一口（或不喝就亲）",type:"normal"}
+{text:"用嘴喂对方喝一口（或不喝就亲）",type:"normal"},
+{text:"让对方指挥你做一个动作",type:"normal"}
 ],
-drink:[{text:"喝半杯",type:"normal"},{text:"喝一杯",type:"normal"}],
-rest:[{text:"下一轮休息",type:"rest"}],
-special:[{text:"后退2格",type:"normal"},{text:"后退3格",type:"normal"}]
+drink:[{text:"喝半杯",type:"normal"},{text:"喝一杯",type:"normal"},{text:"喝半杯",type:"normal"}],
+rest:[{text:"下一轮休息",type:"rest"},{text:"下一轮休息",type:"rest"}],
+special:[{text:"后退2格",type:"normal"},{text:"后退3格",type:"normal"},{text:"后退2格",type:"normal"}]
 };
 const SKILLS=[{id:"acc",name:"加速卡"},{id:"int",name:"干扰卡"},{id:"shd",name:"免死金牌"},{id:"rer",name:"重掷卡"},{id:"swp",name:"互换卡"},{id:"dbl",name:"双倍卡"},{id:"truth",name:"真心话"}];
 const REW=["前进2格","前进3格","获得技能牌","免去下次任务","额外掷一次","让对方夸你一句"];
@@ -213,22 +218,24 @@ function show(p){$$(".page").forEach(x=>x.classList.remove("active"));$("#page-"
 function makePool(){
   let arr=[];
   const add=(src,cnt)=>{for(let i=0;i<cnt;i++)arr.push(Object.assign({},src[i%src.length]))};
-  if(S.mood==="sweet"){add(POOL.sweet,12);add(POOL.desire,4);add(POOL.rest,3);add(POOL.special,2)}
-  else if(S.mood==="desire"){add(POOL.desire,10);add(POOL.sweet,5);add(POOL.wild,4);add(POOL.rest,2);add(POOL.special,2)}
-  else if(S.mood==="wild"){add(POOL.wild,9);add(POOL.desire,7);add(POOL.sweet,3);add(POOL.rest,2);add(POOL.special,2)}
-  else{add(POOL.sweet,7);add(POOL.desire,7);add(POOL.wild,5);add(POOL.rest,3);add(POOL.special,3)}
-  if(!S.noDrink) add(POOL.drink,5);
-  else add([...POOL.sweet,...POOL.rest],5);
+
+  if(S.mood==="sweet"){add(POOL.sweet,22);add(POOL.desire,12);add(POOL.rest,6);add(POOL.special,6)}
+  else if(S.mood==="desire"){add(POOL.desire,18);add(POOL.sweet,10);add(POOL.wild,10);add(POOL.rest,6);add(POOL.special,6)}
+  else if(S.mood==="wild"){add(POOL.wild,16);add(POOL.desire,14);add(POOL.sweet,8);add(POOL.rest,6);add(POOL.special,6)}
+  else{add(POOL.sweet,14);add(POOL.desire,14);add(POOL.wild,10);add(POOL.rest,6);add(POOL.special,6)}
+
+  if(!S.noDrink){add(POOL.drink,10)}
+  else{add(POOL.sweet,8);add(POOL.rest,6)}
 
   for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}
   arr=arr.slice(0,S.n);
 
-  if(!arr.some(t=>t.type==="fly")) arr[Math.floor(S.n*0.3)].type="fly";
-  if(!arr.some(t=>t.type==="rest")) arr[Math.floor(S.n*0.6)].type="rest";
+  if(!arr.some(t=>t.type==="fly")) arr[Math.min(Math.floor(S.n*0.3),S.n-1)].type="fly";
+  if(!arr.some(t=>t.type==="rest")) arr[Math.min(Math.floor(S.n*0.6),S.n-1)].type="rest";
 
   arr=arr.map((t,i)=>{
     const c=S.custom[i];
-    if(c){return Object.assign({},t,{text:c.text||t.text,time:c.time!=null?c.time:t.time})}
+    if(c) return Object.assign({},t,{text:c.text||t.text,time:c.time!=null?c.time:t.time});
     return t;
   });
   S.tasks=arr;
